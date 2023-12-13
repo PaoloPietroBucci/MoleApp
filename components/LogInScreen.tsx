@@ -1,26 +1,66 @@
-import React, { useState } from 'react';
-import {Text, StyleSheet, TextInput, Button, GestureResponderEvent, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Text,
+  StyleSheet,
+  TextInput,
+  GestureResponderEvent,
+  TouchableOpacity,
+} from 'react-native';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-const LogInScreen = () => {
-    
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 
-    function handleLogin(event: GestureResponderEvent): void {
-        throw new Error('Function not implemented.');
-    }
+const LogInScreen = () => {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation = useNavigation()
+
+  function handleLogin(event: GestureResponderEvent) {
+    
+    auth()
+    .createUserWithEmailAndPassword('jane.doe@example.com', 'SuperSecretPassword!')
+    .then(() => {
+      navigation.navigate('Home');
+  })
+  }
 
   return (
-    <SafeAreaView
-      style={[styles.container, { height:'100%'}]} >
+    <SafeAreaView style={[styles.container, {height: '100%'}]}>
       <Text style={styles.title}>LogIn</Text>
-      <View style={[styles.container, { width: '80%'}]}>
-        <TextInput placeholder="Email" style={styles.input} onChangeText={(text) => setUsername(text)}/>
-        <TextInput placeholder="Password" style={styles.input} onChangeText={(text) => setPassword(text)} />
-        <TouchableOpacity style={{marginTop:20}} onPress={handleLogin}>
-        <Text >Login</Text>
-      </TouchableOpacity>
+      <View style={[styles.container, {width: '80%'}]}>
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          onChangeText={text => setUsername(text)}
+        />
+        <TextInput
+          placeholder="Password"
+          style={styles.input}
+          onChangeText={text => setPassword(text)}
+        />
+        <TouchableOpacity
+          style={{
+            marginTop: 20,
+            width: '30%',
+            borderRadius: 20,
+            borderColor: 'gray',
+            borderWidth: 1,
+          }}
+          onPress={handleLogin}>
+          <Text
+            style={{
+              width: 'auto',
+              textAlign: 'center',
+              fontSize: 20,
+              marginTop: 10,
+              marginBottom: 10,
+            }}>
+            {' '}
+            Login{' '}
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -29,13 +69,13 @@ const LogInScreen = () => {
 const styles = StyleSheet.create({
   title: {
     fontSize: 50,
-    paddingBottom:80
+    paddingBottom: 80,
   },
 
   input: {
-    marginVertical:30,
-    height:'15%',
-    width:'80%',
+    marginVertical: 30,
+    height: '15%',
+    width: '80%',
     paddingTop: 20,
     paddingBottom: 20,
     borderRadius: 10,
@@ -48,7 +88,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
 });
 

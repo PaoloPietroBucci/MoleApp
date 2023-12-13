@@ -35,6 +35,7 @@ const Menu = () => {
         initialRouteName="Home"
         activeColor="#f0edf6"
         inactiveColor="#3e2465"
+        labeled={false}
         barStyle={{backgroundColor: '#694fad'}}>
         <Tab.Screen
           name="Profile"
