@@ -10,16 +10,10 @@ import TeamsScreen from './TeamsScreen';
 import StandingScreen from './StandingsScreen';
 import NewsScreen from './NewsScreen';
 import LogInScreen from './LogInScreen';
+import HomeScreen from './HomeScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
 function ProfileScreen() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -30,7 +24,6 @@ function ProfileScreen() {
 
 const Menu = () => {
   return (
-    <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Home"
         activeColor="#f0edf6"
@@ -80,7 +73,6 @@ const Menu = () => {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
   );
 };
 

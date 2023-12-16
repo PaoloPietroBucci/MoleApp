@@ -9,21 +9,22 @@ import {
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import * as RootNavigation from '../components/RootNavigation';
 
-const LogInScreen = () => {
+const LogInScreen = ({ route :  }) => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation()
+  const {isLoggedIn, setIsLoggedIn} = route.params
 
   function handleLogin(event: GestureResponderEvent) {
     
     auth()
-    .createUserWithEmailAndPassword('jane.doe@example.com', 'SuperSecretPassword!')
+    .createUserWithEmailAndPassword(username, password)
     .then(() => {
-      navigation.navigate('Home');
-  })
+      setIsLoggedIn(true)
+    })
   }
 
   return (
@@ -61,6 +62,25 @@ const LogInScreen = () => {
             Login{' '}
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            marginTop: 20,
+            width: '30%',
+            borderRadius: 20,
+            borderColor: 'gray',
+            borderWidth: 1,
+          }}
+          >
+          <Text
+            style={{
+              width: 'auto',
+              textAlign: 'center',
+              fontSize: 20,
+            }}>
+            {' '}
+            You already have an account? Sign in{' '}
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -90,6 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
+  
 });
 
 export default LogInScreen;
