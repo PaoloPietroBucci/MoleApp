@@ -10,20 +10,18 @@ import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import * as RootNavigation from '../components/RootNavigation';
 
-const LogInScreen = ({ route :  }) => {
+const LogInScreen = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {isLoggedIn, setIsLoggedIn} = route.params
 
   function handleLogin(event: GestureResponderEvent) {
     
     auth()
     .createUserWithEmailAndPassword(username, password)
     .then(() => {
-      setIsLoggedIn(true)
+      console.log('user created with email: ', username)
     })
   }
 

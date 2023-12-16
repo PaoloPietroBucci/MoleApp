@@ -10,7 +10,6 @@ import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import * as RootNavigation from '../components/RootNavigation';
 
 const LogInScreen = () => {
 
@@ -23,8 +22,7 @@ const LogInScreen = () => {
     auth()
     .createUserWithEmailAndPassword(username, password)
     .then(() => {
-      console.log('Bravo hai loggagto!!')
-      //RootNavigation.navigate('HomeScreen', { userName: username });
+      console.log(`User ${username} loggato con successo`)
   })
   }
 

@@ -1,29 +1,42 @@
 import LogInScreen from './components/LogInScreen';
 import SignInScreen from './components/SignInScreen';
-import Menu from './components/Menu';
-import {navigationRef} from './components/RootNavigation';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './components/HomeScreen';
-import {useContext, useReducer, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 
 
-  
-const Stack = createStackNavigator();
-const [isLoggedIn, setIsLoggedIn] = useState()
-
 function App(): JSX.Element {
-  return(
+
+  const Stack = createStackNavigator();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    console.debug('starting', user);
+    auth().onAuthStateChanged((user: any) => {
+      console.trace('changed', user);
+      setUser(user);
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    });
+  }, []);
+
+  return (
+
     <NavigationContainer>
-  {isLoggedIn ? (
+      {user == null ? (
         <Stack.Navigator>
-          <Stack.Screen name="LogIn" component={LogInScreen} initialParams={{ isLoggedIn, setIsLoggedIn }}></Stack.Screen>
+          <Stack.Screen name="LogIn" component={LogInScreen}></Stack.Screen>
           <Stack.Screen name="SignIn" component={SignInScreen}></Stack.Screen>
-        </Stack.Navigator>) :(
-        <HomeScreen></HomeScreen>)
-  }
-</NavigationContainer>
-  )
+        </Stack.Navigator>
+      ) : (
+        <HomeScreen></HomeScreen>
+      )}
+    </NavigationContainer>
+  );
 }
 
 export default App;
