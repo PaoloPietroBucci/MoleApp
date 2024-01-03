@@ -12,16 +12,16 @@ import auth from '@react-native-firebase/auth';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const LogInScreen = () => {
-
+  const navigation = useNavigation<any>();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   function handleLogin(event: GestureResponderEvent) {
     
     auth()
-    .createUserWithEmailAndPassword(username, password)
+    .signInWithEmailAndPassword(username, password)
     .then(() => {
-      console.log('user created with email: ', username)
+      console.log('LogInSuccesful', username)
     })
   }
 
@@ -56,11 +56,11 @@ const LogInScreen = () => {
               marginTop: 10,
               marginBottom: 10,
             }}>
-            {' '}
-            Login{' '}
+            Login
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+        onPress={()=> {navigation.navigate('SignIn')}}
           style={{
             marginTop: 20,
             width: '30%',
@@ -76,7 +76,7 @@ const LogInScreen = () => {
               fontSize: 20,
             }}>
             {' '}
-            You already have an account? Sign in{' '}
+            You don't have an account? Sign in
           </Text>
         </TouchableOpacity>
       </View>

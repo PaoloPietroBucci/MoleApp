@@ -11,16 +11,9 @@ import StandingScreen from './StandingsScreen';
 import NewsScreen from './NewsScreen';
 import LogInScreen from './LogInScreen';
 import HomeScreen from './HomeScreen';
+import ProfileScreen from './ProfileScreen';
 
 const Tab = createMaterialBottomTabNavigator();
-
-function ProfileScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Welcome User!</Text>
-    </View>
-  );
-}
 
 const Menu = () => {
   return (

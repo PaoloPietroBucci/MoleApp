@@ -1,5 +1,12 @@
+import {View} from 'react-native';
+
 const StandingScreen = () => {
-    return (<></>)
-}
+  return (
+    <>
+      <View>
+      </View>
+    </>
+  );
+};
 
 export default StandingScreen;
