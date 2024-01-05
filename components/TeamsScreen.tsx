@@ -1,17 +1,14 @@
-import {Text, View} from 'react-native';
+import { useState } from 'react';
+import {FlatList, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Team from '../model/Team';
 
 const TeamsScreen = () => {
-  const elements = [];
-
-  for (let i = 0; i < 10; i++) {
-    elements.push(<Text key={i}>Team {i + 1}</Text>);
-  }
+  const [teams, setTeams] = useState<Team[]>([]);
 
   return (
     <SafeAreaView>
       <Text> Teams</Text>
-      <View>{elements}</View>
     </SafeAreaView>
   );
 };

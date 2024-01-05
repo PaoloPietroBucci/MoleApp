@@ -3,7 +3,6 @@ import {View, Text} from 'react-native';
 import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import FontIcon1 from 'react-native-vector-icons/FontAwesome';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import {NavigationContainer} from '@react-navigation/native';
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import TeamsScreen from './TeamsScreen';
