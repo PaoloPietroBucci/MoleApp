@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import User from '../model/User';
 
-export async function getUser(uid: string): Promise<User> {
+export function getUser(uid: string): Promise<User> {
   return firestore()
     .collection('Users')
     .doc(uid)

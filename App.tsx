@@ -12,32 +12,32 @@ import User from './model/User';
 export const authContext = createContext<any>({});
 
 function App(): JSX.Element {
+
+
   const Stack = createStackNavigator();
   const [user, setUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     console.trace('starting', user);
-    auth().onAuthStateChanged((userFirebase: any) => {
-      console.trace('changed', userFirebase);
-      if (userFirebase !== null) {
-        getUser(userFirebase.uid).then((loggedUser) => {
-        setUser(loggedUser)
-        console.debug('not null user', user);
-      })
-      } else {
-        setUser(user);
-        console.debug('null user', user);
+    const subscriber = auth().onAuthStateChanged(authStateChangedAction);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  function authStateChangedAction(firebaseUser:any) {
+    console.trace('changed', firebaseUser);
+    if (firebaseUser !== null) {
+      getUser(firebaseUser.uid).then( (response) =>{
+        console.debug(response)
+        setUser(response)
       }
-      if (isLoading) {
-        setIsLoading(false);
-      }
-    });
-  },[]);
+      )
+    }
+  }
 
   return (
     <NavigationContainer>
-      {user == null ? (
+      {user == undefined ? (
         <Stack.Navigator>
           <Stack.Screen name="LogIn" component={LogInScreen}></Stack.Screen>
           <Stack.Screen name="SignIn" component={SignInScreen}></Stack.Screen>
