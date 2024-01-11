@@ -1,34 +1,27 @@
 import firestore from '@react-native-firebase/firestore';
 import User from '../model/User';
 
-export function getUser(uid: string): Promise<User> {
-  return firestore()
-    .collection('Users')
-    .doc(uid)
-    .get()
-    .then(res => {
-      return res.data() as User;
-    }
-    )
-    .catch(error => {
-      console.log(error);
-      return error;
-    });
+export async function getUser(email: string): Promise<User> {
+  try {
+    const user = await firestore()
+      .collection('Users')
+      .where('email', '==', email)
+      .get()
+      .then(res => {
+        if (res)
+        return res.docs[0].data() as User;
+      });
+    // user!.dateOfBirth = new Date(user!.dateOfBirth.seconds)
+    return user as User;
+  } catch (error: any) {
+    throw Error(error);
+  }
 }
 
-export function addUser(user:User){
-  firestore()
-  .collection('Users')
-  .doc(user.uid)
-  .set({
-    name: user.name,
-    surname : user.surname,
-    username : user.username,
-    password : user.password,
-    photoURL : user.photoURL,
-    phoneNumber : user.phoneNumber
-  })
-  .then(() => {
-    console.log('User added!');
-  });
+export async function addUser(user: User) {
+  console.log('adduser:... ', user);
+  const result = await firestore()
+    .collection('Users')
+    .add(user)
+    .catch(error => console.log(error));
 }

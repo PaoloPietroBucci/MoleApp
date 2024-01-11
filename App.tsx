@@ -1,53 +1,81 @@
 import LogInScreen from './components/LogInScreen';
-import SignInScreen from './components/SignInScreen';
+
 import ProfileScreen from './components/ProfileScreen';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+import auth, {FirebaseAuthTypes, firebase} from '@react-native-firebase/auth';
 import {createStackNavigator} from '@react-navigation/stack';
-import React, {createContext, useEffect, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Menu from './components/Menu';
-import {getUser} from './firebase/userApi';
+import {addUser, getUser} from './firebase/userApi';
 import User from './model/User';
+import SignInScreen from './components/SignInScreen';
 
-export const authContext = createContext<any>({});
+interface AuthContextData {
+  user: User | undefined;
+  setUser: any;
+  mainLogo: string | undefined;
+}
+export const authContext = createContext<AuthContextData>({
+  user: undefined,
+  setUser: null,
+  mainLogo: undefined,
+});
 
 function App(): JSX.Element {
-
-
+  const mainLogoRef = 'loghi/Mole-Cup_Magenta.png';
+  const [url, SetUrl] = useState<string>();
   const Stack = createStackNavigator();
   const [user, setUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.trace('starting', user);
-    const subscriber = auth().onAuthStateChanged(authStateChangedAction);
-    return subscriber; // unsubscribe on unmount
+    const bootApp = async () => {
+      const subscriber = auth().onAuthStateChanged(authStateChangedAction);
+      const url = await storage().ref(mainLogoRef).getDownloadURL();
+      SetUrl(url);
+      return subscriber;
+    };
+    bootApp();
   }, []);
 
-  function authStateChangedAction(firebaseUser:any) {
-    console.trace('changed', firebaseUser);
-    if (firebaseUser !== null) {
-      getUser(firebaseUser.uid).then( (response) =>{
-        console.debug(response)
-        setUser(response)
+  async function authStateChangedAction(firebaseUser: any) {
+    console.log(firebaseUser);
+    if (firebaseUser) {
+      try {
+        const myUser = await getUser(firebaseUser.email);
+        if (myUser !== undefined) {
+          setUser(myUser);
+        }
+      } catch (error: any) {
+        console.log(error);
       }
-      )
     }
   }
 
   return (
-    <NavigationContainer>
-      {user == undefined ? (
-        <Stack.Navigator>
-          <Stack.Screen name="LogIn" component={LogInScreen}></Stack.Screen>
-          <Stack.Screen name="SignIn" component={SignInScreen}></Stack.Screen>
-        </Stack.Navigator>
-      ) : (
-        <authContext.Provider value={{user: user, setUser: setUser}}>
+    <authContext.Provider
+      value={{user: user, setUser: setUser, mainLogo: url!}}>
+      <NavigationContainer>
+        {user === undefined ? (
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <Stack.Screen name="LogIn" component={LogInScreen}></Stack.Screen>
+            <Stack.Screen name="SignIn" component={SignInScreen}></Stack.Screen>
+          </Stack.Navigator>
+        ) : (
           <Menu></Menu>
-        </authContext.Provider>
-      )}
-    </NavigationContainer>
+        )}
+      </NavigationContainer>
+    </authContext.Provider>
   );
 }
 

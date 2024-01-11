@@ -9,82 +9,53 @@ import {
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {styles} from '../styles';
 
 const LogInScreen = () => {
   const navigation = useNavigation<any>();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleLogin(event: GestureResponderEvent) {
-    
-    auth()
-    .signInWithEmailAndPassword(username, password)
-    .then(() => {
-      console.log('LogInSuccesful', username)
-    })
+  async function handleLogin(event: GestureResponderEvent) {
+    try {
+      await auth().signInWithEmailAndPassword(username, password);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
-    <SafeAreaView style={[styles.container, {height: '100%'}]}>
+    <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}>LogIn</Text>
-      <View style={[styles.container, {width: '80%'}]}>
-        <TextInput
-          placeholder="Email"
-          style={styles.input}
-          onChangeText={text => setUsername(text)}
-        />
-        <TextInput
-          placeholder="Password"
-          style={styles.input}
-          onChangeText={text => setPassword(text)}
-        />
-        <TouchableOpacity
-          style={{
-            marginTop: 20,
-            width: '30%',
-            borderRadius: 20,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
-          onPress={handleLogin}>
-          <Text
-            style={{
-              width: 'auto',
-              textAlign: 'center',
-              fontSize: 20,
-              marginTop: 10,
-              marginBottom: 10,
-            }}>
-            Login
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-        onPress={()=> {navigation.navigate('SignIn')}}
-          style={{
-            marginTop: 20,
-            width: '30%',
-            borderRadius: 20,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
-          >
-          <Text
-            style={{
-              width: 'auto',
-              textAlign: 'center',
-              fontSize: 20,
-            }}>
-            {' '}
-            You don't have an account? Sign in
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <TextInput
+        placeholder="Email"
+        style={styles.input}
+        onChangeText={text => setUsername(text)}
+      />
+      <TextInput
+        placeholder="Password"
+        style={styles.input}
+        onChangeText={text => setPassword(text)}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('SignIn');
+        }}
+        style={styles.button}>
+        <Text
+          style={styles.buttonText}>
+          You don't have an account? Sign in
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const logInstyles = StyleSheet.create({
   title: {
     fontSize: 50,
     paddingBottom: 80,
@@ -108,7 +79,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
-  
 });
 
 export default LogInScreen;

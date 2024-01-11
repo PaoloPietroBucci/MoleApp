@@ -1,10 +1,8 @@
 export default interface User{
-    uid : string,
     name : string,
     surname : string,
-    username : string,
+    email : string,
     password : string,
     photoURL : string,
-    phoneNumber : string
-    dateOfBirth: Date
+    dateOfBirth: Date | {nanoseconds: number, seconds: number}
 }

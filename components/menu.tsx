@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import FontIcon1 from 'react-native-vector-icons/FontAwesome';
 import AntIcon from 'react-native-vector-icons/AntDesign';
@@ -18,36 +18,27 @@ const Menu = () => {
   return (
       <Tab.Navigator
         initialRouteName="Home"
-        activeColor="#f0edf6"
-        inactiveColor="#3e2465"
         labeled={false}
-        barStyle={{backgroundColor: '#694fad'}}>
+        barStyle={menuStyle.barStyle}>
         <Tab.Screen
           name="Profile"
           component={ProfileScreen}
           options={{
-            tabBarIcon: () => <FontIcon name="user-alt" color="black" size={30} />,
-          }}
-        />
-        <Tab.Screen
-          name="LogIn"
-          component={LogInScreen}
-          options={{
-            tabBarIcon: () => <AntIcon name="login" color="black" size={30} />,
+            tabBarIcon: () => <FontIcon name="user-alt" color="black" size={25} />,
           }}
         />
         <Tab.Screen
           name="Teams"
           component={TeamsScreen}
           options={{
-            tabBarIcon: () => <FontIcon1 name="group" color="black" size={30} />,
+            tabBarIcon: () => <FontIcon1 name="group" color="black" size={25} />,
           }}
         />
         <Tab.Screen
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarIcon: () => <FontIcon name="home" color="black" size={30} />,
+            tabBarIcon: () => <FontIcon name="home" color="black" size={25} />,
           }}
         />
         <Tab.Screen
@@ -67,5 +58,13 @@ const Menu = () => {
       </Tab.Navigator>
   );
 };
+
+
+const screenHeight = Dimensions.get('window').height;
+const menuStyle = StyleSheet.create({
+  barStyle : {
+  backgroundColor: 'rgba(236, 30, 78, 0.95)', height:screenHeight / 12
+  }
+})
 
 export default Menu;

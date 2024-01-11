@@ -1,59 +1,83 @@
-import {Image, TouchableOpacity} from 'react-native';
+import {Dimensions, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {authContext} from '../App';
 import auth from '@react-native-firebase/auth';
+import {useContext, useEffect, useState} from 'react';
+import {authContext} from '../App';
+import storage from '@react-native-firebase/storage';
+import {styles} from '../styles';
 
 const ProfileScreen = () => {
+  const {user, setUser} = useContext(authContext);
+  const [photo, setPhoto] = useState<string>();
+
+  useEffect(() => {
+    const getUrl = async () => {
+      console.log(user);
+      const url = await storage().ref(user!.photoURL).getDownloadURL();
+      setPhoto(url);
+    };
+    getUrl();
+    console.log(photo);
+  }, []);
+
+  const handleLogOut = () => {
+    auth()
+      .signOut()
+      .then(() => {
+        setUser(undefined);
+        console.log('User signed out!');
+      });
+  };
+
   return (
-    <authContext.Consumer>
-      {({user, setUser}) => {
-
-        const handleLogOut = () => {
-          auth()
-            .signOut()
-            .then(() => {
-              setUser(undefined);
-              console.log('User signed out!');
-            });
-        };
-
-        return (
-          <SafeAreaView
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}>
-            <Text> Profile </Text>
-            <Image source={{uri: 'urldiprova'}} alt="immafine profilo"></Image>
-            <Text> {user.name || 'UID not available'} </Text>
-            <Text> {user.surname} </Text>
-            <TouchableOpacity
-              style={{
-                marginTop: 20,
-                width: '30%',
-                borderRadius: 20,
-                borderColor: 'gray',
-                borderWidth: 1,
-              }}
-              onPress={handleLogOut}>
-              <Text
-                style={{
-                  width: 'auto',
-                  textAlign: 'center',
-                  fontSize: 20,
-                  marginTop: 10,
-                  marginBottom: 10,
-                }}>
-                LogOut
-              </Text>
-            </TouchableOpacity>
-          </SafeAreaView>
-        );
-      }}
-    </authContext.Consumer>
+    <SafeAreaView style={styles.pageContainer}>
+      <Text style={styles.title}> Profile </Text>
+      {photo && (
+        <>
+          <Image
+            source={{uri: photo}}
+            style={profileStyle.profileImage}></Image>
+          <Text style={profileStyle.username}> {`${user?.name}  ${user?.surname}`}  </Text>
+          <Text style={profileStyle.userData}> {user!.dateOfBirth.toLocaleString('it-IT', {day: '2-digit', month: '2-digit', year: 'numeric'})} </Text>
+          <Text style={profileStyle.userData}> {user!.email} </Text>
+        </>
+      )}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleLogOut}>
+        <Text
+          style={styles.buttonText}>
+          LogOut
+        </Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
+
+const screenHeight = Dimensions.get('window').height;
+
+const profileStyle = StyleSheet.create({
+
+  userData : {
+    margin:5,
+    fontWeight:'300',
+    fontSize:15,
+    color:'black'
+  },
+
+  username: {
+    margin: 10,
+    fontWeight:'bold',
+    fontSize:30,
+    color:'black'
+  }, 
+  profileImage: {
+    marginVertical: 20,
+    width: screenHeight / 4,
+    height: screenHeight / 4,
+    borderRadius: screenHeight / 8,
+  },
+});
 
 export default ProfileScreen;

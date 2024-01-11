@@ -5,11 +5,12 @@ import {calculateStat} from '../services/rankingCalc';
 import {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const GroupHeader = () => {
+const GroupHeader: React.FC<{ groupName: string }> = ({groupName}) => {
   return (
     <View style={styles.groupHeader}>
+      <Text style={styles.headerField}>{groupName}</Text>
       <Text style={styles.headerField}>PTS</Text>
-      <Text style={styles.headerField}>GS</Text>
+      <Text style={styles.headerField}>GF</Text>
     </View>
   );
 };
@@ -18,7 +19,6 @@ const StandingsScreen = () => {
   const [groupA, setGroupA] = useState<Team[]>([]);
   const [groupB, setGroupB] = useState<Team[]>([]);
   const [groupC, setGroupC] = useState<Team[]>([]);
-  const [groupD, setGroupD] = useState<Team[]>([]);
 
   useEffect(() => {
     const calculate = async () => {
@@ -39,10 +39,11 @@ const StandingsScreen = () => {
   );
 
   return (
-    <ScrollView>
+    <SafeAreaView>
       {/*Group A*/}
       <View style={styles.group}>
-        <GroupHeader></GroupHeader>
+        <GroupHeader
+        groupName='Group A'></GroupHeader>
         <FlatList<Team>
           data={groupA}
           renderItem={renderItem}
@@ -51,7 +52,8 @@ const StandingsScreen = () => {
       </View>
       {/*Group B*/}
       <View style={styles.group}>
-        <GroupHeader></GroupHeader>
+        <GroupHeader
+        groupName='Group B'></GroupHeader>
         <FlatList<Team>
           data={groupB}
           renderItem={renderItem}
@@ -60,14 +62,15 @@ const StandingsScreen = () => {
       </View>
       {/*Group C*/}
       <View style={styles.group}>
-        <GroupHeader></GroupHeader>
+        <GroupHeader
+        groupName='Group C'></GroupHeader>
         <FlatList<Team>
           data={groupC}
           renderItem={renderItem}
           keyExtractor={item => item.name}
         />
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 

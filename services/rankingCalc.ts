@@ -1,31 +1,33 @@
-import {getGroupMatchesByTeam} from '../firebase/matchApi';
+import { getGroupMatchesByTeam } from '../firebase/matchApi';
 import Match from '../model/Match';
 import Team from '../model/Team';
 
-export function calculateStat(group: Team[]): Team[] {
-  console.log(group);
-  group.forEach(async team => {
-    var mathces: Match[] = await getGroupMatchesByTeam(team.name);
-    team.points = 0;
-    mathces.forEach(match => {
-      if (match.team1 === team) {
-        team.totalGoals = team.totalGoals! + match.goalTeam1;
+export async function calculateStat(group: Team[]): Promise<Team[]> {
+  for (const team of group) {
+    const matches: Match[] = await getGroupMatchesByTeam(team.name);
+    
+    for (const match of matches) {
+      if (match.team1 === team.name) {
+        team.totalGoals = (team.totalGoals || 0) + match.goalTeam1;
+
         if (match.goalTeam1 > match.goalTeam2) {
           team.points += 3;
-        } else if (match.goalTeam1 == match.goalTeam2) {
+        } else if (match.goalTeam1 === match.goalTeam2) {
           team.points += 1;
         }
       }
-      if (match.team2 === team) {
-        team.totalGoals = team.totalGoals! + match.goalTeam2;
+
+      if (match.team2 === team.name) {
+        team.totalGoals = (team.totalGoals || 0) + match.goalTeam2;
+
+        if (match.goalTeam2 > match.goalTeam1) {
+          team.points += 3;
+        } else if (match.goalTeam1 === match.goalTeam2) {
+          team.points += 1;
+        }
       }
-      if (match.goalTeam2 > match.goalTeam1) {
-        team.points = team.points + 3;
-      } else if (match.goalTeam1 == match.goalTeam2) {
-        team.points = team.points + 1;
-      }
-    });
-  });
+    }
+  }
 
   group.sort(sortByPoint);
 
@@ -34,9 +36,10 @@ export function calculateStat(group: Team[]): Team[] {
 
 function sortByPoint(team1: Team, team2: Team): number {
   if (team1.points > team2.points) {
-    return 1;
-  } else if (team1.points < team2.points) {
     return -1;
-  } else team1.points == team2.points;
-  return team1.name.localeCompare(team2.name);
+  } else if (team1.points < team2.points) {
+    return +1;
+  } else {
+    return team1.name.localeCompare(team2.name);
+  }
 }
