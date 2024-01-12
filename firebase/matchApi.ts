@@ -23,7 +23,9 @@ export async function getGroupMatchesByTeam(
   }
 }
 
-export async function getMatch(teamName: string): Promise<Match[]> {
+export async function getGroupMatchesByTeam1(
+  teamName: string,
+): Promise<Match[]> {
   var matches: Match[] = [];
   try {
     let Filter = firebase.firestore.Filter;
@@ -31,15 +33,33 @@ export async function getMatch(teamName: string): Promise<Match[]> {
       .collection('Matches')
       .where('groupMatch', '==', true)
       .where(
-          Filter.or(
-            Filter('team1', '==', teamName),
-            Filter('team2', '==', teamName),
-          ),
-        )
+        Filter.or(
+          Filter('team1', '==', teamName),
+          Filter('team2', '==', teamName),
+        ),
+      )
       .get();
     result.forEach(document => {
       const matchData = document.data() as Match;
-        matches.push(matchData);
+      matches.push(matchData);
+    });
+    return matches;
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getKnokOutMatches() {
+  var matches: Match[] = [];
+  try {
+    const result = await firestore()
+      .collection('Matches')
+      .where('groupMatch', '==', false)
+      .get();
+    result.forEach(document => {
+      const matchData = document.data() as Match;
+      matches.push(matchData);
     });
     return matches;
   } catch (error: any) {

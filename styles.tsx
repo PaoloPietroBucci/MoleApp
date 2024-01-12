@@ -2,12 +2,13 @@ import {Dimensions, Platform, StyleSheet} from 'react-native';
 
 const mainColor = 'rgba(236, 30, 78, 0.95)';
 const screenHeight = Dimensions.get('window').height;
+const screenWidth =  Dimensions.get('window').width
 
 export const styles = StyleSheet.create({
     
   mainLogo: {
-    height: 30,
-    width: 'auto',
+    width: screenWidth *0.75 ,
+    height: screenHeight*0.75,
   },
 
   pageContainer: {
