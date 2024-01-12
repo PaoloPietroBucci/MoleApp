@@ -1,5 +1,4 @@
-import firestore, {Filter} from '@react-native-firebase/firestore';
-import User from '../model/User';
+import firestore, {Filter, firebase} from '@react-native-firebase/firestore';
 import Match from '../model/Match';
 
 export async function getGroupMatchesByTeam(
@@ -16,6 +15,50 @@ export async function getGroupMatchesByTeam(
       if (matchData.team1 === teamName || matchData.team2 === teamName) {
         matches.push(matchData);
       }
+    });
+    return matches;
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getMatch(teamName: string): Promise<Match[]> {
+  var matches: Match[] = [];
+  try {
+    let Filter = firebase.firestore.Filter;
+    const result = await firestore()
+      .collection('Matches')
+      .where('groupMatch', '==', true)
+      .where(
+          Filter.or(
+            Filter('team1', '==', teamName),
+            Filter('team2', '==', teamName),
+          ),
+        )
+      .get();
+    result.forEach(document => {
+      const matchData = document.data() as Match;
+        matches.push(matchData);
+    });
+    return matches;
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getFutureMatches(): Promise<Match[]> {
+  let now = firestore.Timestamp.fromDate(new Date());
+  var matches: Match[] = [];
+  try {
+    const snapshot = await firestore()
+      .collection('Matches')
+      .where('date', '>=', now)
+      .limit(4)
+      .get();
+    snapshot.forEach(document => {
+      matches.push(document.data() as Match);
     });
     return matches;
   } catch (error: any) {

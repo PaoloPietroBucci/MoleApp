@@ -44,3 +44,5 @@ export async function getTeams(): Promise<Team[]> {
     throw Error(error);
   }
 }
+
+

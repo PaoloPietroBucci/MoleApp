@@ -1,45 +1,40 @@
 import LogInScreen from './components/LogInScreen';
-
-import ProfileScreen from './components/ProfileScreen';
-import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 import auth, {FirebaseAuthTypes, firebase} from '@react-native-firebase/auth';
 import {createStackNavigator} from '@react-navigation/stack';
 import React, {
-  Dispatch,
-  SetStateAction,
   createContext,
   useEffect,
   useState,
 } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Menu from './components/Menu';
-import {addUser, getUser} from './firebase/userApi';
+import {getUser} from './firebase/userApi';
 import User from './model/User';
 import SignInScreen from './components/SignInScreen';
 
 interface AuthContextData {
   user: User | undefined;
   setUser: any;
-  mainLogo: string | undefined;
 }
 export const authContext = createContext<AuthContextData>({
   user: undefined,
   setUser: null,
-  mainLogo: undefined,
 });
 
 function App(): JSX.Element {
-  const mainLogoRef = 'loghi/Mole-Cup_Magenta.png';
-  const [url, SetUrl] = useState<string>();
   const Stack = createStackNavigator();
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>({    name : 'Paolo',
+    surname : 'Bucci',
+    email : 'paolo.pb7@gmail',
+    password : 'sabrina',
+    photoURL : '',
+    dateOfBirth: new Date()})
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const bootApp = async () => {
       const subscriber = auth().onAuthStateChanged(authStateChangedAction);
-      const url = await storage().ref(mainLogoRef).getDownloadURL();
-      SetUrl(url);
       return subscriber;
     };
     bootApp();
@@ -61,7 +56,7 @@ function App(): JSX.Element {
 
   return (
     <authContext.Provider
-      value={{user: user, setUser: setUser, mainLogo: url!}}>
+      value={{user: user, setUser: setUser}}>
       <NavigationContainer>
         {user === undefined ? (
           <Stack.Navigator

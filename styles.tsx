@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
   },
 
   pageContainer: {
+    height:'90%',
     marginVertical: 60,
     display: 'flex',
     flexDirection: 'column',
@@ -32,12 +33,21 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 20,
   },
-  rowContainer: {
+  columnContainer: {
     marginVertical: 15,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  rowContainer: {
+    width:'70%',
+    marginVertical: 15,
+    display: 'flex',
+    flex:1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   button: {
     margin: 20,
@@ -63,21 +73,35 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bigLogoContainer: {
-    marginHorizontal: 10,
-    marginVertical: 10,
     width: 80,
     height: 80,
     borderRadius: 25,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
+    margin: 10,
     borderWidth: 2,
     borderColor: 'black',
   },
+  smallLogoContainer: {
+    marginHorizontal: 2,
+    marginVertical: 2,
+    width: 10,
+    height: 10,
+    borderRadius: 25,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   logoImage: {
-    width: 70,
-    height: 70,
+    width: '80%',
+    height: '70%',
     borderRadius: 20,
   },
+  error:{
+    color:'red',
+    fontWeight:'bold',
+    fontSize:15
+  }
 });

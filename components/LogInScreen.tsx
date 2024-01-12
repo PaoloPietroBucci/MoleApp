@@ -14,6 +14,7 @@ import {styles} from '../styles';
 
 const LogInScreen = () => {
   const navigation = useNavigation<any>();
+  const [errors, setErrors] = useState();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,13 +22,15 @@ const LogInScreen = () => {
     try {
       await auth().signInWithEmailAndPassword(username, password);
     } catch (error) {
-      console.log(error);
+      setErrors(errors)
     }
   }
 
   return (
     <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}>LogIn</Text>
+
+      {errors && <View><Text style={styles.error}>{errors}</Text></View>}
       <TextInput
         placeholder="Email"
         style={styles.input}

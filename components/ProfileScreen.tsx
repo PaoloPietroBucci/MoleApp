@@ -14,8 +14,13 @@ const ProfileScreen = () => {
   useEffect(() => {
     const getUrl = async () => {
       console.log(user);
+      try{
       const url = await storage().ref(user!.photoURL).getDownloadURL();
       setPhoto(url);
+      }
+      catch{
+        setPhoto(undefined)
+      }
     };
     getUrl();
     console.log(photo);
@@ -33,16 +38,12 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}> Profile </Text>
-      {photo && (
-        <>
           <Image
-            source={{uri: photo}}
+            source={photo !== undefined || null ? {uri: photo} : require('../assets/NoPhoto.png')}
             style={profileStyle.profileImage}></Image>
           <Text style={profileStyle.username}> {`${user?.name}  ${user?.surname}`}  </Text>
           <Text style={profileStyle.userData}> {user!.dateOfBirth.toLocaleString('it-IT', {day: '2-digit', month: '2-digit', year: 'numeric'})} </Text>
           <Text style={profileStyle.userData}> {user!.email} </Text>
-        </>
-      )}
       <TouchableOpacity
         style={styles.button}
         onPress={handleLogOut}>

@@ -16,7 +16,7 @@ import auth from '@react-native-firebase/auth';
 import DatePicker from 'react-native-date-picker';
 import User from '../model/User';
 import {addUser} from '../firebase/userApi';
-import ImagePicker from './utils/ImagePicker';
+import ImagePicker from './ImagePicker';
 import {authContext} from '../App';
 import {styles} from '../styles';
 
@@ -60,6 +60,7 @@ const SignInScreen = () => {
   return (
     <SafeAreaView style={[styles.pageContainer]}>
       <Text style={styles.title}>Sign In</Text>
+      {errors && <View><Text style={styles.error}>{errors}</Text></View>}
       <TextInput
         placeholder="name"
         style={styles.input}
