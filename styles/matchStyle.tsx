@@ -23,6 +23,7 @@ const matchStyles = StyleSheet.create({
     },
   
     leftTeamBox: {
+      height:25,
       display: 'flex',
       flex: 3,
       flexDirection: 'row',
@@ -30,6 +31,7 @@ const matchStyles = StyleSheet.create({
       alignContent: 'flex-start',
     },
     rightTeamBox: {
+      height:25,
       display: 'flex',
       flex: 3,
       flexDirection: 'row-reverse',
@@ -41,6 +43,10 @@ const matchStyles = StyleSheet.create({
       fontSize: 18,
     },
     separator: {
+      height:25,
+      display:"flex",
+      justifyContent:'center',
+      alignItems:'center',
       flex: 1,
     },
     date: {

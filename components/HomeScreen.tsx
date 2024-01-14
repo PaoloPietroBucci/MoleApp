@@ -20,45 +20,45 @@ function HomeScreen() {
 
   useEffect(() => {
     const fetchFutureMatches = async () => {
-      const matches = [
-        {
-          date: new Date(),
-          goalTeam1: null,
-          goalTeam2: null,
-          groupMatch: true,
-          penalties: false,
-          team1: 'Alfieri',
-          team2: 'Gioberti',
-        },
-        {
-          date: new Date(),
-          goalTeam1: null,
-          goalTeam2: null,
-          penalties: false,
-          team1: "Sant'Anna",
-          team2: 'Berti',
-        },
-        {
-          date: new Date(),
-          goalTeam1: null,
-          goalTeam2: null,
-          groupMatch: true,
-          penalties: false,
-          team1: 'Gioberti',
-          team2: 'Galfer',
-        },
-        {
-          date: new Date(),
-          goalTeam1: null,
-          goalTeam2: null,
-          groupMatch: true,
-          penalties: false,
-          team1: 'Convitto',
-          team2: 'Majorana',
-        },
-      ];
+      // const matches = [
+      //   {
+      //     date: new Date(),
+      //     goalTeam1: null,
+      //     goalTeam2: null,
+      //     groupMatch: true,
+      //     penalties: false,
+      //     team1: 'Alfieri',
+      //     team2: 'Gioberti',
+      //   },
+      //   {
+      //     date: new Date(),
+      //     goalTeam1: null,
+      //     goalTeam2: null,
+      //     penalties: false,
+      //     team1: "Sant'Anna",
+      //     team2: 'Berti',
+      //   },
+      //   {
+      //     date: new Date(),
+      //     goalTeam1: null,
+      //     goalTeam2: null,
+      //     groupMatch: true,
+      //     penalties: false,
+      //     team1: 'Gioberti',
+      //     team2: 'Galfer',
+      //   },
+      //   {
+      //     date: new Date(),
+      //     goalTeam1: null,
+      //     goalTeam2: null,
+      //     groupMatch: true,
+      //     penalties: false,
+      //     team1: 'Convitto',
+      //     team2: 'Majorana',
+      //   },
+      // ];
       try{
-      // const matches = await getFutureMatches();
+      const matches = await getFutureMatches();
       const logos : { [key: string]: string } = {}
       await Promise.all(
         matches.map(async (match) => {
@@ -83,7 +83,7 @@ function HomeScreen() {
     return (
       <>
         <View style={homeStyles.matchContainer}>
-          <Text style={homeStyles.date}>{item.date.toDateString()}</Text>
+          <Text style={homeStyles.date}>{item.date.toDate().toDateString()}</Text>
           <View style={homeStyles.teamsContainer}>
             <View style={homeStyles.leftTeamBox}>
               <View style={styles.smallLogoContainer}>

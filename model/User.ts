@@ -6,5 +6,5 @@ export default interface User {
   email: string;
   password: string;
   photoURL: string;
-  dateOfBirth: Date | typeof firebase.firestore.Timestamp
+  dateOfBirth: any;
 }

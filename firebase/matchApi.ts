@@ -50,12 +50,12 @@ export async function getGroupMatchesByTeam1(
   }
 }
 
-export async function getFinalsMatches() {
+export async function getMatchesByRound(round:string) {
   var matches: Match[] = [];
   try {
     const result = await firestore()
       .collection('Matches')
-      .where('round', '==', 'finals')
+      .where('round', '==', round)
       .get();
     result.forEach(document => {
       const matchData = document.data() as Match;
@@ -68,41 +68,6 @@ export async function getFinalsMatches() {
   }
 }
 
-export async function getSemiFinalsMatches() {
-  var matches: Match[] = [];
-  try {
-    const result = await firestore()
-      .collection('Matches')
-      .where('round', '==', 'semifinals')
-      .get();
-    result.forEach(document => {
-      const matchData = document.data() as Match;
-      matches.push(matchData);
-    });
-    return matches;
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
-
-export async function getQuartersMatches() {
-  var matches: Match[] = [];
-  try {
-    const result = await firestore()
-      .collection('Matches')
-      .where('round', '==', 'quarters')
-      .get();
-    result.forEach(document => {
-      const matchData = document.data() as Match;
-      matches.push(matchData);
-    });
-    return matches;
-  } catch (error: any) {
-    console.log(error);
-    throw Error(error);
-  }
-}
 
 export async function getFutureMatches(): Promise<Match[]> {
   let now = firestore.Timestamp.fromDate(new Date());

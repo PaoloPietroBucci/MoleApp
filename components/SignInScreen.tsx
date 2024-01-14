@@ -20,11 +20,12 @@ import {addUser} from '../firebase/userApi';
 import ImagePicker from './ImagePicker';
 import {authContext} from '../App';
 import {styles} from '../styles';
+import {validateSignInForm} from '../services/validateInput';
 
 const SignInScreen = () => {
   const {setUser} = useContext(authContext);
   const [modalOpen, setModalOpen] = useState(false);
-  const [errors, setErrors] = useState();
+  const [errors, setErrors] = useState<string>();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -34,34 +35,50 @@ const SignInScreen = () => {
   const [dateOfBirth, setDateOfBirth] = useState<Date>();
 
   async function handleLogin() {
-    const newUser: User = {
-      name: name,
-      surname: surname,
-      email: username,
-      password: password,
-      photoURL: photoURL,
-      dateOfBirth: dateOfBirth!,
-    };
-    try {
-      const user = await auth().createUserWithEmailAndPassword(
-        username,
-        password,
-      );
-      console.log(photoURL);
-      const ref = storage().ref(`users_profile_images/${user.user.uid}.jpeg`);
-      const result = await ref.putFile(photoURL);
-      newUser.photoURL = `users_profile_images/${user.user.uid}.jpeg`;
-      await addUser(newUser);
-      setUser(newUser);
-    } catch (error: any) {
-      setErrors(error);
+    const valid = validateSignInForm(
+      name,
+      surname,
+      username,
+      password,
+      dateOfBirth,
+    );
+    if (valid !== 'valid') {
+      setErrors(valid);
+    } else {
+      const newUser: User = {
+        name: name,
+        surname: surname,
+        email: username,
+        password: password,
+        photoURL: photoURL,
+        dateOfBirth: dateOfBirth!,
+      };
+      try {
+        const user = await auth().createUserWithEmailAndPassword(
+          username,
+          password,
+        );
+        console.log(photoURL);
+        const ref = storage().ref(`users_profile_images/${user.user.uid}.jpeg`);
+        const result = await ref.putFile(photoURL);
+        newUser.photoURL = `users_profile_images/${user.user.uid}.jpeg`;
+        await addUser(newUser);
+        setUser(newUser);
+      } catch (error: any) {
+        console.log(error);
+        setErrors(error.message);
+      }
     }
   }
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.title}>Sign In</Text>
-      {errors && <View><Text style={styles.error}>{errors}</Text></View>}
+      {errors && (
+        <View>
+          <Text style={styles.error}>{errors}</Text>
+        </View>
+      )}
       <TextInput
         placeholder="name"
         style={styles.input}
@@ -108,13 +125,8 @@ const SignInScreen = () => {
         }}
       />
       <ImagePicker photoURL={photoURL} setPhotoURL={setPhotoURL} />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleLogin}>
-        <Text
-          style={styles.buttonText}>
-          SingIn
-        </Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>SingIn</Text>
       </TouchableOpacity>
     </ScrollView>
   );

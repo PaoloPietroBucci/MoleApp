@@ -6,24 +6,31 @@ import {
   GestureResponderEvent,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {styles} from '../styles';
+import {validateLogInForm} from '../services/validateInput';
 
 const LogInScreen = () => {
   const navigation = useNavigation<any>();
-  const [errors, setErrors] = useState();
+  const [errors, setErrors] = useState<string>();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   async function handleLogin(event: GestureResponderEvent) {
-    try {
-      await auth().signInWithEmailAndPassword(username, password);
-    } catch (error) {
-      setErrors(errors)
+    const valid = validateLogInForm(username, password);
+    if (valid !== 'valid') {
+      setErrors(valid);
+    } else {
+      try {
+        await auth().signInWithEmailAndPassword(username, password);
+      } catch (error) {
+        setErrors(errors);
+      }
     }
   }
 
@@ -31,7 +38,11 @@ const LogInScreen = () => {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.title}>LogIn</Text>
 
-      {errors && <View><Text style={styles.error}>{errors}</Text></View>}
+      {errors && (
+        <View>
+          <Text style={styles.error}>{errors}</Text>
+        </View>
+      )}
       <TextInput
         placeholder="Email"
         style={styles.input}
@@ -50,8 +61,7 @@ const LogInScreen = () => {
           navigation.navigate('SignIn');
         }}
         style={styles.button}>
-        <Text
-          style={styles.buttonText}>
+        <Text style={styles.buttonText}>
           You don't have an account? Sign in
         </Text>
       </TouchableOpacity>
