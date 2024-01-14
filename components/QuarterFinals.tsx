@@ -1,23 +1,17 @@
 import {
   FlatList,
   Image,
-  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import {getTeamLogoUrl, getTeamsByGroup} from '../firebase/teamApi';
-import Team from '../model/Team';
-import {calculateStat} from '../services/rankingCalc';
+import {getTeamLogoUrl} from '../firebase/teamApi';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {styles} from '../styles';
-import FontIcon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/native';
 import Match from '../model/Match';
-import { getQuartersMatches } from '../firebase/matchApi';
-import StandingsContoll from './utils/standingsControll';
+import StandingsContoll from './utils/StandingsControll';
 import matchStyles from '../styles/matchStyle';
 
 const QuarterFinlas = () => {

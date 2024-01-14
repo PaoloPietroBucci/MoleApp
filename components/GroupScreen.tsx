@@ -3,9 +3,7 @@ import Team from '../model/Team';
 import {useEffect, useState} from 'react';
 import {styles} from '../styles';
 import {useNavigation} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import FontIcon from 'react-native-vector-icons/FontAwesome5';
-import StandingsContoll from './utils/standingsControll';
+import StandingsContoll from './utils/StandingsControll';
 
 const GroupHeader: React.FC<{groupName: string}> = ({groupName}) => {
   return (
@@ -114,7 +112,7 @@ const GroupScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.title}> Standings </Text>
-      <StandingsContoll navigation={navigation} next='quarterFinals' current='Group Stage'></StandingsContoll>
+      <StandingsContoll navigation={navigation} prev={undefined} next='quarterFinals' current='Group Stage'></StandingsContoll>
       {/*Group A*/}
       <View style={groupStyles.group}>
         <GroupHeader groupName="Group A"></GroupHeader>
