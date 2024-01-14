@@ -2,7 +2,7 @@ export default interface Player{
     playerID : number,
     name : string,
     surname : string,
-    birth : Date,
+    birth : any,
     role : string,
     team : string,
 }
