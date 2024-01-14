@@ -34,28 +34,28 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const bootApp = async () => {
-      const subscriber = auth().onAuthStateChanged(authStateChangedAction);
+      // const subscriber = auth().onAuthStateChanged(authStateChangedAction);
       setTimeout(() => {
         setShowSplash(false);
       }, 3000);
-      return subscriber;
+      // return subscriber;
     };
     bootApp();
   }, []);
 
-  async function authStateChangedAction(firebaseUser: any) {
-    console.log(firebaseUser);
-    if (firebaseUser) {
-      try {
-        const myUser = await getUser(firebaseUser.email);
-        if (myUser !== undefined) {
-          setUser(myUser);
-        }
-      } catch (error: any) {
-        console.log(error);
-      }
-    }
-  }
+  // async function authStateChangedAction(firebaseUser: any) {
+  //   console.log(firebaseUser);
+  //   if (firebaseUser) {
+  //     try {
+  //       const myUser = await getUser(firebaseUser.email);
+  //       if (myUser !== undefined) {
+  //         setUser(myUser);
+  //       }
+  //     } catch (error: any) {
+  //       console.log(error);
+  //     }
+  //   }
+  // }
   if (showSplash) {
     return <SplashScreen></SplashScreen>;
   } else {

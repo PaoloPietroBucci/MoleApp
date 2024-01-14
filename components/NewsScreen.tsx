@@ -1,5 +1,5 @@
-import {StyleSheet, Text, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {styles} from '../styles';
 import {ReactNode, useEffect, useState} from 'react';
 import {getTenHighlights} from '../firebase/highlightApi';
@@ -14,30 +14,54 @@ const NewsScreen = () => {
       const firstTen = await getTenHighlights();
       setHighlights(firstTen);
     };
-  });
+    fetch();
+  }, []);
 
-  const renderList = highlights?.map((video, index): ReactNode => {
+  const renderList = highlights?.map((media, index): ReactNode => {
+    const video = media.urlReference.includes('mp4')
+    console.log(video)
+    if (video){
     return (
       <View style={highlightStyles.videoContainer} key={index}>
         <Video
-          source={{uri: video.urlReference}}
+          source={{uri: media.urlReference}}
+          controls={true}
+          paused={true}
           style={highlightStyles.video}></Video>
-        <Text style={highlightStyles.videoTitle}>{video.title}</Text>
+        <Text style={highlightStyles.videoTitle}>{media.title}</Text>
       </View>
-    );
+    )}
+    else {
+      return (<View style={highlightStyles.videoContainer} key={index}>
+        <Image
+          source={{uri: media.urlReference}}
+          style={highlightStyles.video}></Image>
+        <Text style={highlightStyles.videoTitle}>{media.title}</Text>
+      </View>)
+    }
   });
 
-
-  return <ScrollView style={styles.pageContainer}>
-    <Text style={styles.title}>Highlights</Text>
-    {renderList}
-    </ScrollView>;
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <Text style={styles.title}>Highlights</Text>
+      {renderList}
+    </ScrollView>
+  );
 };
 
 const highlightStyles = StyleSheet.create({
-  videoContainer: {},
-  video: {},
-  videoTitle: {},
+  videoContainer: {
+    display:'flex',
+    flexDirection:'column',
+  },
+  video: {
+    height:100,
+    width:200
+  },
+  videoTitle: {
+    fontSize:15,
+    fontWeight:'600',
+  },
 });
 
 export default NewsScreen;

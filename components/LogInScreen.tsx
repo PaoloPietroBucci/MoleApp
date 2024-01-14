@@ -5,6 +5,7 @@ import {
   TextInput,
   GestureResponderEvent,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -27,7 +28,7 @@ const LogInScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.title}>LogIn</Text>
 
       {errors && <View><Text style={styles.error}>{errors}</Text></View>}
@@ -54,7 +55,7 @@ const LogInScreen = () => {
           You don't have an account? Sign in
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

@@ -11,19 +11,23 @@ export const styles = StyleSheet.create({
     height: screenHeight*0.75,
   },
 
-  pageContainer: {
-    height:'90%',
-    marginVertical: 60,
+  scrollContainer:{
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent:'space-around',
+    alignItems: 'center'
+  },
+
+  pageContainer: {
+    height:screenHeight*0.9,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
 
   title: {
     fontSize: 50,
     fontWeight: 'bold',
-    marginBottom: 20,
+    margin: 30,
     color: mainColor,
   },
   input: {
@@ -85,10 +89,10 @@ export const styles = StyleSheet.create({
     borderColor: 'black',
   },
   smallLogoContainer: {
-    marginHorizontal: 2,
+    marginHorizontal: 10,
     marginVertical: 2,
-    width: 10,
-    height: 10,
+    width: 20,
+    height: 20,
     borderRadius: 25,
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -104,5 +108,14 @@ export const styles = StyleSheet.create({
     color:'red',
     fontWeight:'bold',
     fontSize:15
+  },
+  navigationControlls:{
+    marginBottom:20,
+    height:30,
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+     width:screenWidth*0.8
   }
 });

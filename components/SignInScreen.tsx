@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Button,
   Alert,
+  ScrollView,
 } from 'react-native';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -58,7 +59,7 @@ const SignInScreen = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.pageContainer]}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text style={styles.title}>Sign In</Text>
       {errors && <View><Text style={styles.error}>{errors}</Text></View>}
       <TextInput
@@ -115,7 +116,7 @@ const SignInScreen = () => {
           SingIn
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

@@ -63,7 +63,7 @@ const Menu = () => {
 const screenHeight = Dimensions.get('window').height;
 const menuStyle = StyleSheet.create({
   barStyle : {
-  backgroundColor: 'rgba(236, 30, 78, 0.95)', height:screenHeight / 12
+  backgroundColor: 'rgba(236, 30, 78, 0.95)', height:screenHeight * 0.09
   }
 })
 

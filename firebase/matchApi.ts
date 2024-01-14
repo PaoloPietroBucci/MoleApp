@@ -50,12 +50,48 @@ export async function getGroupMatchesByTeam1(
   }
 }
 
-export async function getKnokOutMatches() {
+export async function getFinalsMatches() {
   var matches: Match[] = [];
   try {
     const result = await firestore()
       .collection('Matches')
-      .where('groupMatch', '==', false)
+      .where('round', '==', 'finals')
+      .get();
+    result.forEach(document => {
+      const matchData = document.data() as Match;
+      matches.push(matchData);
+    });
+    return matches;
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getSemiFinalsMatches() {
+  var matches: Match[] = [];
+  try {
+    const result = await firestore()
+      .collection('Matches')
+      .where('round', '==', 'semifinals')
+      .get();
+    result.forEach(document => {
+      const matchData = document.data() as Match;
+      matches.push(matchData);
+    });
+    return matches;
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
+
+export async function getQuartersMatches() {
+  var matches: Match[] = [];
+  try {
+    const result = await firestore()
+      .collection('Matches')
+      .where('round', '==', 'quarters')
       .get();
     result.forEach(document => {
       const matchData = document.data() as Match;

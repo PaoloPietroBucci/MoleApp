@@ -14,12 +14,12 @@ const TeamsScreen = () => {
       setTeams(teams);
     };
     fetchTeams();
-  });
+  },[]);
 
   function renderItem({item}: {item: Team}): any {
     return (
       <View>
-        <View style={styles.rowContainer}>
+        <View style={styles.columnContainer}>
           <View style={styles.bigLogoContainer}>
             <Image
               source={{uri: item.logoURL}}
@@ -38,8 +38,6 @@ const TeamsScreen = () => {
         data={teams}
         renderItem={renderItem}
         keyExtractor={item => item.name}
-        contentContainerStyle={teamStyle.listContentContainer}
-        horizontal={false}
         numColumns={3}
       />
     </SafeAreaView>
@@ -47,7 +45,6 @@ const TeamsScreen = () => {
 };
 
 const teamStyle = StyleSheet.create({
-  listContentContainer: {},
 });
 
 export default TeamsScreen;

@@ -45,4 +45,17 @@ export async function getTeams(): Promise<Team[]> {
   }
 }
 
-
+export async function getTeamLogoUrl(teamName: string): Promise<string> {
+  try {
+    const result = await firestore()
+      .collection('Teams')
+      .where('name', '==', teamName)
+      .get();
+    const team = result.docs[0].data();
+    const url = await storage().ref(team!.logoURL).getDownloadURL()
+    return url;
+  } catch (error: any) {
+    console.error(error);
+    throw Error(error);
+  }
+}
