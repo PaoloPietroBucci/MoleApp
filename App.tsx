@@ -9,6 +9,8 @@ import {getUser} from './firebase/userApi';
 import User from './model/User';
 import SignInScreen from './components/SignInScreen';
 import {SplashScreen} from './components/SplashScreen';
+import PresentationSreen from './components/PresentationScreen';
+import { addPlayersByTeam } from './firebase/playerApi';
 
 interface AuthContextData {
   user: User | undefined;
@@ -37,7 +39,6 @@ function App(): JSX.Element {
   }, []);
 
   async function authStateChangedAction(firebaseUser: any) {
-    console.log(firebaseUser);
     if (firebaseUser) {
       try {
         const myUser = await getUser(firebaseUser.email);
@@ -60,6 +61,7 @@ function App(): JSX.Element {
               screenOptions={{
                 headerShown: false,
               }}>
+              <Stack.Screen name='presentation' component={PresentationSreen} ></Stack.Screen>
               <Stack.Screen name="LogIn" component={LogInScreen}></Stack.Screen>
               <Stack.Screen
                 name="SignIn"

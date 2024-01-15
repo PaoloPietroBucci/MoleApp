@@ -18,8 +18,7 @@ const NewsScreen = () => {
   }, []);
 
   const renderList = highlights?.map((media, index): ReactNode => {
-    const video = media.urlReference.includes('mp4')
-    console.log(video)
+    const video = media.urlReference.includes('mp4') || media.urlReference.includes('mp3')
     if (video){
     return (
       <View style={highlightStyles.videoContainer} key={index}>

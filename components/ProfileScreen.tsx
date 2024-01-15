@@ -20,7 +20,6 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     const getUrl = async () => {
-      console.log(user);
       try {
         const url = await storage().ref(user!.photoURL).getDownloadURL();
         setPhoto(url);
@@ -29,7 +28,6 @@ const ProfileScreen = () => {
       }
     };
     getUrl();
-    console.log(photo);
   }, []);
 
   const handleLogOut = () => {
@@ -68,7 +66,7 @@ const ProfileScreen = () => {
         </Text>
       </View>
       <View style={profileStyle.fieldContainer}>
-        <Text style={profileStyle.userData}> {user!.email} </Text>
+        <Text style={[profileStyle.userData, {fontSize:25}]}> {user!.email} </Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogOut}>
         <Text style={styles.buttonText}>LogOut</Text>
@@ -84,12 +82,12 @@ const profileStyle = StyleSheet.create({
   userData: {
     textAlign:'center',
     margin: 10,
-        fontWeight: 'bold',
+    fontWeight: 'bold',
     fontSize: 30,
     color: 'black',
   },
   profileImage: {
-    marginVertical: 20,
+    marginBottom: 15,
     width: screenHeight / 4,
     height: screenHeight / 4,
     borderRadius: screenHeight / 8,
@@ -101,16 +99,7 @@ const profileStyle = StyleSheet.create({
     width : screenWidth*0.8,
     height: screenWidth*0.2,
     borderRadius:10,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      }})
+    borderWidth:1
   }
 });
 

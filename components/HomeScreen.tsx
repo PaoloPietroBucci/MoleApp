@@ -6,57 +6,27 @@ import {
   StyleSheet,
   Platform,
   Dimensions,
+  Pressable,
+  Modal,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {styles} from '../styles';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import Match from '../model/Match';
 import {getFutureMatches} from '../firebase/matchApi';
 import { getTeamLogoUrl } from '../firebase/teamApi';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { authContext } from '../App';
+import AddMatchScreen from './AddMatchScreen';
 
 function HomeScreen() {
+  const {user, setUser} = useContext(authContext)
+  const [showModal, setShowModal] = useState(false)
   const [futureMatches, setfutureMatches] = useState<Match[] | any>();
   const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchFutureMatches = async () => {
-      // const matches = [
-      //   {
-      //     date: new Date(),
-      //     goalTeam1: null,
-      //     goalTeam2: null,
-      //     groupMatch: true,
-      //     penalties: false,
-      //     team1: 'Alfieri',
-      //     team2: 'Gioberti',
-      //   },
-      //   {
-      //     date: new Date(),
-      //     goalTeam1: null,
-      //     goalTeam2: null,
-      //     penalties: false,
-      //     team1: "Sant'Anna",
-      //     team2: 'Berti',
-      //   },
-      //   {
-      //     date: new Date(),
-      //     goalTeam1: null,
-      //     goalTeam2: null,
-      //     groupMatch: true,
-      //     penalties: false,
-      //     team1: 'Gioberti',
-      //     team2: 'Galfer',
-      //   },
-      //   {
-      //     date: new Date(),
-      //     goalTeam1: null,
-      //     goalTeam2: null,
-      //     groupMatch: true,
-      //     penalties: false,
-      //     team1: 'Convitto',
-      //     team2: 'Majorana',
-      //   },
-      // ];
       try{
       const matches = await getFutureMatches();
       const logos : { [key: string]: string } = {}
@@ -107,18 +77,44 @@ function HomeScreen() {
   }
 
   return (
+
     <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}> Home </Text>
+      <Text style={{fontSize:15, fontWeight:'800'}}>Upcoming Matches</Text>
       <FlatList
         data={futureMatches}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}></FlatList>
+        keyExtractor={(item, index) => index.toString()}>
+        </FlatList>
+        {!user?.admin &&<Pressable
+            onPress={() => setShowModal(true)}>
+        <View style={homeStyles.iconContainer}>
+        <MaterialIcons name='add' size={30}></MaterialIcons>
+        </View>
+        </Pressable>}
+        <Modal
+        animationType="slide"
+        visible={showModal}
+        onRequestClose={() => {
+          setShowModal(false);
+        }}> 
+        <AddMatchScreen></AddMatchScreen>
+      </Modal>
     </SafeAreaView>
   );
 }
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const homeStyles = StyleSheet.create({
+  iconContainer:{
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    height:50,
+    width:50,
+    borderRadius:25,
+    backgroundColor:'rgba(236, 30, 78, 0.95)'
+  },
   matchContainer: {
     height: 120,
     width: screenWidth * 0.8,
@@ -142,14 +138,14 @@ const homeStyles = StyleSheet.create({
     flex: 3,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignContent: 'flex-start',
+    alignItems: 'center',
   },
   rightTeamBox: {
     display: 'flex',
     flex: 3,
     flexDirection: 'row-reverse',
     justifyContent: 'flex-start',
-    alignContent: 'flex-start',
+    alignItems: 'center',
   },
   teamName: {
     fontWeight: '600',

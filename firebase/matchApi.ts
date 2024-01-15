@@ -87,3 +87,10 @@ export async function getFutureMatches(): Promise<Match[]> {
     throw Error(error);
   }
 }
+
+export async function addMatch(match: Match) {
+  const result = await firestore()
+    .collection('Matches')
+    .add(match)
+    .catch(error => console.log(error));
+}

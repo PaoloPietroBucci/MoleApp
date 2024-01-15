@@ -82,7 +82,7 @@ const QuarterFinlas = () => {
               <View style={styles.smallLogoContainer}>
                 <Image
                   source={{uri: urlTeam1}}
-                  style={styles.smallLogoContainer}></Image>
+                  style={styles.logoImage}></Image>
               </View>
               <Text style={matchStyles.teamName}> {item.team1} </Text>
             </View>

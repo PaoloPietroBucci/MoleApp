@@ -7,4 +7,5 @@ export default interface User {
   password: string;
   photoURL: string;
   dateOfBirth: any;
+  admin: boolean
 }

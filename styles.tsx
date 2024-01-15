@@ -7,8 +7,10 @@ const screenWidth =  Dimensions.get('window').width
 export const styles = StyleSheet.create({
     
   mainLogo: {
-    width: screenWidth *0.75 ,
-    height: screenHeight*0.75,
+    marginVertical: 20,
+    resizeMode: 'contain',
+    width: screenWidth * 0.8,
+    height: screenHeight *0.9,
   },
 
   scrollContainer:{
@@ -18,32 +20,40 @@ export const styles = StyleSheet.create({
   },
 
   pageContainer: {
-    height:screenHeight*0.9,
+    height: screenHeight *0.85,
     display: 'flex',
+    flex:1,
     flexDirection: 'column',
+    justifyContent:'flex-start',
     alignItems: 'center'
   },
 
   title: {
     fontSize: 50,
+    margin:20,
     fontWeight: 'bold',
-    margin: 30,
     color: mainColor,
+    textAlign: 'center',
   },
   input: {
     width: 250,
     height: 'auto',
     borderColor: 'gray',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 20,
     margin: 20,
   },
   columnContainer: {
-    marginVertical: 15,
+    margin:5,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rowContainer: {
     width:'70%',
@@ -90,7 +100,6 @@ export const styles = StyleSheet.create({
   },
   smallLogoContainer: {
     marginHorizontal: 10,
-    marginVertical: 2,
     width: 20,
     height: 20,
     borderRadius: 25,
@@ -100,15 +109,17 @@ export const styles = StyleSheet.create({
   },
 
   logoImage: {
+    resizeMode: 'contain',
     width: '80%',
     height: '70%',
     borderRadius: 20,
   },
   error:{
     color:'red',
+    textShadowColor: 'rgba(255, 0, 0, 0.8)',
+    textShadowRadius: 5,
     fontWeight:'bold',
-    fontSize:15
-  },
+    fontSize:25 },
   navigationControlls:{
     marginBottom:20,
     height:30,

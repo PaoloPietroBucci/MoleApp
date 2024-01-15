@@ -28,7 +28,7 @@ const matchStyles = StyleSheet.create({
       flex: 3,
       flexDirection: 'row',
       justifyContent: 'flex-start',
-      alignContent: 'flex-start',
+      alignItems: 'center',
     },
     rightTeamBox: {
       height:25,
@@ -36,9 +36,10 @@ const matchStyles = StyleSheet.create({
       flex: 3,
       flexDirection: 'row-reverse',
       justifyContent: 'flex-start',
-      alignContent: 'flex-start',
+      alignItems: 'center',
     },
     teamName: {
+      height:25,
       fontWeight: '600',
       fontSize: 18,
     },

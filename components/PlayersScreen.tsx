@@ -1,13 +1,21 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {styles} from '../styles';
 import {useNavigation} from '@react-navigation/native';
 import Player from '../model/Player';
-import { getPlayersByTeam } from '../firebase/playerApi';
-import { FlatList } from 'react-native';
+import {getPlayersByTeam} from '../firebase/playerApi';
+import {FlatList} from 'react-native';
 
 
-const PlayersScreen = ({teamName} : {teamName : string}) => {
+const PlayersScreen = ({teamName}: {teamName: string}) => {
   const navigation = useNavigation<any>();
   const [players, setPlayers] = useState<Player[]>([]);
 
@@ -21,75 +29,78 @@ const PlayersScreen = ({teamName} : {teamName : string}) => {
 
   const renderListItems = ({item}: {item: Player}): any => {
     return (
-      <View style={playersStyles.groupRow}>
-        <View style={playersStyles.leftSide}>
-          <Text style={{...playersStyles.stat, fontWeight: 'bold'}}>
-          </Text>
-          <Text style={playersStyles.teamName}>{item.name}</Text>
-          <Text style={playersStyles.teamName}>{item.surname}</Text>
-        </View>
-        <View style={playersStyles.rightSide}>
-          <Text style={playersStyles.stat}>{item.birth.toDate()}</Text>
-          <Text style={playersStyles.stat}>{item.role}</Text>
-        </View>
+      <View
+        style={[
+          styles.rowContainer,
+          {
+            width: Dimensions.get('window').width * 0.8,
+            height:30
+          },
+        ]}>
+        <Text style={{fontWeight: '700', flex: 1.5, fontSize:14}}>
+          {item.name} {item.surname}
+        </Text>
+        <Text style={{fontWeight: '700', flex: 1}}>
+          {item.birth.toDate().toLocaleString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })}
+        </Text>
+        {item.role == 'attaccante' ? (
+          <View style={[playersStyles.iconContainer, {flex: 1}]}>
+            <Image
+              source={require('../assets/striker_icon.webp')}
+              style={playersStyles.icon}></Image>
+          </View>
+        ) : item.role == 'centrocampista' ? (
+          <View style={[playersStyles.iconContainer, {flex: 1}]}>
+            <Image
+              source={require('../assets/midfielder_icon.webp')}
+              style={playersStyles.icon}></Image>
+          </View>
+        ) : item.role == 'difensore' ? (
+          <View style={[playersStyles.iconContainer, {flex: 1}]}>
+            <Image
+              source={require('../assets/defender_icon.webp')}
+              style={playersStyles.icon}></Image>
+          </View>
+        ) : item.role == 'portiere' ? (
+          <View style={[playersStyles.iconContainer, {flex: 1}]}>
+            <Image
+              source={require('../assets/keeper_icon.webp')}
+              style={playersStyles.icon}></Image>
+          </View>
+        ) : (
+          <View></View>
+        )}
       </View>
     );
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text style={styles.title}> 's team </Text>
-      <View style={playersStyles.leftSide}>
-        <Text style={playersStyles.headerField}>NAME</Text>
-      </View>
-      <View style={playersStyles.rightSide}>
-        <Text>BIRTH</Text>
-        <Text>ROLE</Text>
-      </View>
+    <>
+      <Text style={[styles.title, {fontSize: 30}]}> {teamName}'s team </Text>
       <FlatList<Player>
-        data = {players}
-        renderItem = {renderListItems}
-        keyExtractor={(item, index) => index.toString()} 
-        />
-
-    </ScrollView>
+        data={players}
+        renderItem={renderListItems}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </>
   );
 };
 
 const playersStyles = StyleSheet.create({
-  groupRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  iconContainer: {
+    marginEnd:15,
+    width: '100%',
+    height: '100%',
   },
-  teamName: {fontWeight: 'bold', margin: 8},
-  stat: {marginHorizontal: 17, marginVertical: 8, fontWeight: 'bold'},
-  group: {
-    width: '80%',
-    marginBottom: 20,
-  },
-  groupHeader: {
-    backgroundColor: 'black',
-    display: 'flex',
-    flexDirection: 'row',
-    textAlign: 'right',
-    justifyContent: 'space-between',
-    borderRadius: 15,
-  },
-  headerField: {
-    color: 'white',
-    margin: 10,
-  },
-  leftSide: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  rightSide: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
+  icon:{
+    height:'100%',
+    width:'100%',
+    resizeMode:'contain'
+  }
 });
 
 export default PlayersScreen;

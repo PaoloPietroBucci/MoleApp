@@ -11,7 +11,6 @@ export async function getUser(email: string): Promise<User> {
         if (res)
         return res.docs[0].data() as User;
       });
-    // user!.dateOfBirth = new Date(user!.dateOfBirth.seconds)
     return user as User;
   } catch (error: any) {
     throw Error(error);
@@ -19,7 +18,6 @@ export async function getUser(email: string): Promise<User> {
 }
 
 export async function addUser(user: User) {
-  console.log('adduser:... ', user);
   const result = await firestore()
     .collection('Users')
     .add(user)
