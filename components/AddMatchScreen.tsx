@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import {styles} from '../styles';
 import Team from '../model/Team';
 import {getTeams} from '../firebase/teamApi';
@@ -11,23 +11,73 @@ import {addUser} from '../firebase/userApi';
 import {addMatch} from '../firebase/matchApi';
 import Match from '../model/Match';
 import {CheckBox} from 'react-native-elements';
+import {validateNewMatchForm} from '../services/validateInput';
 
 const AddMatchScreen = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [teams, setTeams] = useState<Team[]>();
   const [team1, setTeam1] = useState<string>();
   const [team2, setTeam2] = useState<string>();
-  const [round, setRound] = useState<string>();
+  const [round, setRound] = useState<string>('group');
   const [matchDate, setMatchDate] = useState<Date>();
-  const [goalTeam1, setGolTeam1] = useState<string>();
-  const [goalTeam2, setGolTeam2] = useState<string>();
-  const [penalties, setPenalties] = useState();
+  const [goalTeam1, setGolTeam1] = useState<number>();
+  const [goalTeam2, setGolTeam2] = useState<number>();
+  const [penaltyGoaloalTeam1, setPenaltyGolTeam1] = useState<number>();
+  const [penaltyGoaloalTeam2, setPenaltyGolTeam2] = useState<number>();
+  const [penalties, setPenalties] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState<string | undefined>();
   const rounds = ['group', 'quarters', 'semifinals', 'finals'];
+
+  const handleSubmin = async () => {
+    const result = validateNewMatchForm(
+      team1!,
+      team2!,
+      matchDate!,
+      round!,
+      goalTeam1!,
+      goalTeam2!,
+      penalties,
+      penaltyGoaloalTeam1!,
+      penaltyGoaloalTeam2!,
+    );
+    if (result !== 'valid') {
+      setError(result);
+    } else {
+      setError(undefined)
+      const newMatch: Match = {
+        team1: team1!,
+        team2: team2!,
+        date: matchDate,
+        round: round!,
+        goalTeam1: goalTeam1,
+        goalTeam2: goalTeam2,
+        penalties: penalties!,
+        penaltyGoalTeam1: penaltyGoaloalTeam1,
+        penaltyGoalTeam2: penaltyGoaloalTeam2,
+      };
+      setTeam1(teams![0].name),
+      setTeam2(teams![0].name),
+      setRound('group'),
+      setMatchDate(undefined),
+      setGolTeam1(undefined),
+      setGolTeam2(undefined),
+      setPenalties(false),
+      setPenaltyGolTeam1(undefined),
+      setPenaltyGolTeam2(undefined),
+      setIsChecked(false)
+
+      try {
+        await addMatch(newMatch);
+      } catch (error: any) {
+        console.log(error);
+      }
+    }
+  };
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
+    setPenalties(true);
   };
 
   function handlePicker1Change(team: string) {
@@ -44,6 +94,8 @@ const AddMatchScreen = () => {
     const fetch = async () => {
       try {
         const allTeams = await getTeams();
+        setTeam1(allTeams[0].name);
+        setTeam2(allTeams[0].name);
         setTeams(allTeams);
       } catch (error: any) {
         console.log(error);
@@ -53,18 +105,14 @@ const AddMatchScreen = () => {
   }, []);
 
   if (teams !== undefined) {
-    /*const newMatch: Match = {
-        team1: team1,
-        team2: team2,
-        date: matchDate,
-        goalTeam1: goalTeam1,
-        goalTeam2: goalTeam2,
-        round: round,
-
-      };*/
     return (
-      <View style={styles.pageContainer}>
-        <Text style={styles.title}>Add a new match</Text>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={[styles.title, {fontSize: 42}]}>Add a new match</Text>
+        {error && (
+          <View>
+            <Text style={styles.error}>{error}</Text>
+          </View>
+        )}
         <View style={addMatchStyle.dateContainer}>
           <TextInput style={addMatchStyle.dateInput} editable={false}>
             {matchDate ? matchDate?.toDateString() : 'Select match date'}
@@ -77,15 +125,24 @@ const AddMatchScreen = () => {
             <AntIcon name="calendar" color="black" size={30} />
           </TouchableOpacity>
         </View>
-          <View style={[addMatchStyle.picker, {flex:0, width: '50%', height:50}]}>
-            <Picker
-              selectedValue={round}
-              onValueChange={handlePicker3Change}>
-              {rounds!.map((round, index) => (
-                <Picker.Item key={index} label={round} value={round} />
-              ))}
-            </Picker>
-          </View>
+        <View
+          style={[
+            addMatchStyle.picker,
+            {
+              flex: 0,
+              width: '50%',
+              height: 50,
+              display: 'flex',
+              alignContent: 'center',
+              justifyContent: 'center',
+            },
+          ]}>
+          <Picker selectedValue={round} onValueChange={handlePicker3Change}>
+            {rounds!.map((round, index) => (
+              <Picker.Item key={index} label={round} value={round} />
+            ))}
+          </Picker>
+        </View>
         <View style={[addMatchStyle.row]}>
           <View style={addMatchStyle.picker}>
             <Picker selectedValue={team1} onValueChange={handlePicker1Change}>
@@ -129,7 +186,7 @@ const AddMatchScreen = () => {
                 ]}
                 keyboardType="numeric"
                 onChangeText={score => {
-                  setGolTeam1(score);
+                  setGolTeam1(parseInt(score));
                 }}></TextInput>
               <Text>Score</Text>
               <TextInput
@@ -139,53 +196,55 @@ const AddMatchScreen = () => {
                 ]}
                 keyboardType="numeric"
                 onChangeText={score => {
-                  setGolTeam2(score);
+                  setGolTeam2(parseInt(score));
                 }}></TextInput>
             </View>
-            <View style={[addMatchStyle.row]}>
-              <CheckBox
-                title="Penalties"
-                checked={isChecked}
-                onPress={handleCheckboxChange}
-              />
-              {isChecked ? (
-                <>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      {width: 70, height: 50, textAlign: 'center'},
-                    ]}
-                    keyboardType="numeric"
-                    onChangeText={score => {
-                      setGolTeam1(score);
-                    }}></TextInput>
-                  <Text>Score</Text>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      {width: 70, height: 50, textAlign: 'center'},
-                    ]}
-                    keyboardType="numeric"
-                    onChangeText={score => {
-                      setGolTeam2(score);
-                    }}></TextInput>
-                </>
-              ) : (
-                ''
-              )}
-            </View>
+            {round !== 'group' ? (
+              <View style={[addMatchStyle.row, {width:350}]}>
+                <CheckBox disabled = {goalTeam1 == goalTeam2? false : true}
+                  title="Penalties"
+                  checked={isChecked}
+                  onPress={handleCheckboxChange}
+                />
+                {isChecked ? (
+                  <>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {width: 70, height: 50, textAlign: 'center'},
+                      ]}
+                      keyboardType="numeric"
+                      onChangeText={score => {
+                        setPenaltyGolTeam1(parseInt(score));
+                      }}></TextInput>
+                    <Text>Score</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {width: 70, height: 50, textAlign: 'center'},
+                      ]}
+                      keyboardType="numeric"
+                      onChangeText={score => {
+                        setPenaltyGolTeam2(parseInt(score));
+                      }}></TextInput>
+                  </>
+                ) : (
+                  ''
+                )}
+              </View>
+            ) : (
+              <></>
+            )}
           </View>
         ) : (
-          <View></View>
+          <></>
         )}
         <View>
-          <TouchableOpacity
-            style={styles.button} /*onPress={addMatch(newMatch)}*/
-          >
+          <TouchableOpacity style={styles.button} onPress={handleSubmin}>
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   } else {
     return;
@@ -212,21 +271,21 @@ const addMatchStyle = StyleSheet.create({
     flex: 1,
   },
   picker: {
-    marginVertical:30,
-    marginHorizontal:10,
+    marginVertical: 30,
+    marginHorizontal: 10,
     flex: 3,
     color: '#344953',
     borderWidth: 2,
     borderColor: 'black',
-    borderRadius:15
+    borderRadius: 15,
   },
   row: {
-    marginVertical:20,
+    marginVertical: 30,
     height: 50,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'space-around'
+    justifyContent: 'space-around',
   },
 });
 

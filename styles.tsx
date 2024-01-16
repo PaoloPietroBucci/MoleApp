@@ -88,9 +88,9 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bigLogoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 25,
+    width: screenWidth*0.15,
+    height: screenHeight*0.1,
+    borderRadius: 40,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
@@ -110,9 +110,9 @@ export const styles = StyleSheet.create({
 
   logoImage: {
     resizeMode: 'contain',
-    width: '80%',
-    height: '70%',
-    borderRadius: 20,
+    width: '100%',
+    height: '100%',
+    borderRadius: 40,
   },
   error:{
     color:'red',

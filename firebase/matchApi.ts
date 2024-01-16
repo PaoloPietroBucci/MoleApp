@@ -89,8 +89,15 @@ export async function getFutureMatches(): Promise<Match[]> {
 }
 
 export async function addMatch(match: Match) {
+  try{
+    if(match.goalTeam1 == undefined){ match.goalTeam1 = null}
+    if(match.goalTeam2 == undefined){ match.goalTeam2 = null}
+    if(match.penaltyGoalTeam1 == undefined){ match.penaltyGoalTeam1 = null}
+    if(match.penaltyGoalTeam2 == undefined){ match.penaltyGoalTeam2 = null}
   const result = await firestore()
-    .collection('Matches')
-    .add(match)
-    .catch(error => console.log(error));
+    .collection('Matches2')
+    .add(match)}
+catch(error : any){
+  console.log(error)
+}
 }

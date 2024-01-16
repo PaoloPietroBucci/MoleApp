@@ -8,8 +8,9 @@ import {
   Dimensions,
   Pressable,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native';
 import {styles} from '../styles';
 import {useContext, useEffect, useState} from 'react';
 import Match from '../model/Match';
@@ -18,11 +19,12 @@ import { getTeamLogoUrl } from '../firebase/teamApi';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { authContext } from '../App';
 import AddMatchScreen from './AddMatchScreen';
+import { ScrollView } from 'react-native-gesture-handler';
 
 function HomeScreen() {
   const {user, setUser} = useContext(authContext)
   const [showModal, setShowModal] = useState(false)
-  const [futureMatches, setfutureMatches] = useState<Match[] | any>();
+  const [futureMatches, setfutureMatches] = useState<Match[]>();
   const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
@@ -86,7 +88,7 @@ function HomeScreen() {
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}>
         </FlatList>
-        {!user?.admin &&<Pressable
+        {user?.admin &&<Pressable
             onPress={() => setShowModal(true)}>
         <View style={homeStyles.iconContainer}>
         <MaterialIcons name='add' size={30}></MaterialIcons>
@@ -97,7 +99,12 @@ function HomeScreen() {
         visible={showModal}
         onRequestClose={() => {
           setShowModal(false);
-        }}> 
+        }}>
+          <View>
+          <TouchableOpacity style={[styles.button, {width: 70, borderRadius: 1000}]} onPress={() => setShowModal(false)}>
+          <Text style={[styles.buttonText]}>X</Text>
+        </TouchableOpacity>
+        </View>
         <AddMatchScreen></AddMatchScreen>
       </Modal>
     </SafeAreaView>
@@ -107,6 +114,7 @@ const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const homeStyles = StyleSheet.create({
   iconContainer:{
+    marginBottom:20,
     display:'flex',
     alignItems:'center',
     justifyContent:'center',

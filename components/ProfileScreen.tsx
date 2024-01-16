@@ -57,12 +57,16 @@ const ProfileScreen = () => {
       </View>
       <View style={profileStyle.fieldContainer}>
         <Text style={profileStyle.userData}>
-          {' '}
-          {user!.dateOfBirth.toDate().toLocaleString('it-IT', {
+          { (user!.dateOfBirth instanceof  Date) ? user!.dateOfBirth.toLocaleString('it-IT', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
-          })}{' '}
+          }) :
+          user!.dateOfBirth.toDate().toLocaleString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })}
         </Text>
       </View>
       <View style={profileStyle.fieldContainer}>

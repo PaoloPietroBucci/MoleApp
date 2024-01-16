@@ -6,6 +6,6 @@ export default interface User {
   email: string;
   password: string;
   photoURL: string;
-  dateOfBirth: any;
+  dateOfBirth: Date | any;
   admin: boolean
 }

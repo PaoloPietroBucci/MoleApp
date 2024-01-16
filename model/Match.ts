@@ -4,9 +4,10 @@ export default interface Match{
     team1 : string,
     team2 : string,
     date : any,
-    goalTeam1 : number,
-    goalTeam2 : number,
+    round: string,
+    goalTeam1? : number | null,
+    goalTeam2? : number | null,
     penalties : boolean,
-    penaltyGoalTeam1? : number,
-    penaltyGoalTeam2? : number
+    penaltyGoalTeam1? : number | null,
+    penaltyGoalTeam2? : number | null
 }

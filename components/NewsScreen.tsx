@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native';
 import {styles} from '../styles';
 import {ReactNode, useEffect, useState} from 'react';
@@ -47,6 +47,8 @@ const NewsScreen = () => {
     </ScrollView>
   );
 };
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width;
 
 const highlightStyles = StyleSheet.create({
   videoContainer: {
@@ -54,8 +56,8 @@ const highlightStyles = StyleSheet.create({
     flexDirection:'column',
   },
   video: {
-    height:100,
-    width:200
+    height:screenHeight * 0.3,
+    width:screenWidth*0.6
   },
   videoTitle: {
     fontSize:15,

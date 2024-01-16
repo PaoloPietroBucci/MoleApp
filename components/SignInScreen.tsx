@@ -52,16 +52,20 @@ const SignInScreen = () => {
         password: password,
         photoURL: photoURL,
         dateOfBirth: dateOfBirth!,
-        admin:false
+        admin: false,
       };
       try {
         const user = await auth().createUserWithEmailAndPassword(
           username,
           password,
         );
-        const ref = storage().ref(`users_profile_images/${user.user.uid}.jpeg`);
-        const result = await ref.putFile(photoURL);
-        newUser.photoURL = `users_profile_images/${user.user.uid}.jpeg`;
+        if (photoURL !== '') {
+          const ref = storage().ref(
+            `users_profile_images/${user.user.uid}.jpeg`,
+          );
+          const result = await ref.putFile(photoURL);
+          newUser.photoURL = `users_profile_images/${user.user.uid}.jpeg`;
+        }
         await addUser(newUser);
         setUser(newUser);
       } catch (error: any) {
@@ -112,6 +116,7 @@ const SignInScreen = () => {
         </TouchableOpacity>
       </View>
       <DatePicker
+        maximumDate={new Date()}
         modal
         mode="date"
         open={modalOpen}
