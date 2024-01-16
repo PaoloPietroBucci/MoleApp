@@ -15,7 +15,7 @@ const PresentationSreen = () => {
     <SafeAreaView
       style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
       <Image
-        source={require('../assets/MoleCup_mainlogo.png')}
+        source={require('../assets/MoleCup_mainlogo.webp')}
         style={[presentationStyle.logo]}></Image>
       <Text style={[styles.title,{fontSize:40, margin:0}]}>Let's Get Started</Text>
       <TouchableOpacity

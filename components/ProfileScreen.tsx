@@ -46,7 +46,7 @@ const ProfileScreen = () => {
         source={
           photo !== undefined || null
             ? {uri: photo}
-            : require('../assets/NoPhoto.png')
+            : require('../assets/NoPhoto.webp')
         }
         style={profileStyle.profileImage}></Image>
       <View style={profileStyle.fieldContainer}>

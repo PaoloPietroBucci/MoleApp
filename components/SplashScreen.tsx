@@ -5,7 +5,7 @@ export const SplashScreen = () => {
   return (
       <SafeAreaView style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
       <Image
-        source={require('../assets/MoleCup_mainlogo.png')}
+        source={require('../assets/MoleCup_mainlogo.webp')}
         style={[styles.mainLogo]}></Image>
         </SafeAreaView>
   );
