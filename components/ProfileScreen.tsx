@@ -41,7 +41,7 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <Text style={styles.title}> Profile </Text>
+      <Text adjustsFontSizeToFit style={styles.title}> Profile </Text>
       <Image
         source={
           photo !== undefined || null
@@ -49,10 +49,9 @@ const ProfileScreen = () => {
             : require('../assets/NoPhoto.webp')
         }
         style={profileStyle.profileImage}></Image>
-      <View style={profileStyle.fieldContainer}>
-        <Text style={profileStyle.userData}>
-          {' '}
-          {`${user?.name}  ${user?.surname}`}{' '}
+      <View  style={profileStyle.fieldContainer}>
+        <Text adjustsFontSizeToFit style={profileStyle.userData}>
+          {`${user?.name}  ${user?.surname}`}
         </Text>
       </View>
       <View style={profileStyle.fieldContainer}>
@@ -70,7 +69,7 @@ const ProfileScreen = () => {
         </Text>
       </View>
       <View style={profileStyle.fieldContainer}>
-        <Text style={[profileStyle.userData, {fontSize:25}]}> {user!.email} </Text>
+        <Text adjustsFontSizeToFit style={[profileStyle.userData, {fontSize:25}]}> {user!.email} </Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogOut}>
         <Text style={styles.buttonText}>LogOut</Text>

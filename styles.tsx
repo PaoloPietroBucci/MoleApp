@@ -88,9 +88,9 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bigLogoContainer: {
-    width: screenWidth*0.15,
+    width: screenWidth*0.2,
     height: screenHeight*0.1,
-    borderRadius: 40,
+    borderRadius: 100,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',

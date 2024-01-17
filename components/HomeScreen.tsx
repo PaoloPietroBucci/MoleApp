@@ -55,7 +55,13 @@ function HomeScreen() {
     return (
       <>
         <View style={homeStyles.matchContainer}>
-          <Text style={homeStyles.date}>{item.date.toDate().toDateString()}</Text>
+          <Text style={homeStyles.date}>{item.date.toDate().toLocaleString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour:'2-digit',
+            minute:'2-digit'
+          })}</Text>
           <View style={homeStyles.teamsContainer}>
             <View style={homeStyles.leftTeamBox}>
               <View style={styles.smallLogoContainer}>
