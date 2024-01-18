@@ -95,7 +95,7 @@ export async function addMatch(match: Match) {
     if(match.penaltyGoalTeam1 == undefined){ match.penaltyGoalTeam1 = null}
     if(match.penaltyGoalTeam2 == undefined){ match.penaltyGoalTeam2 = null}
   const result = await firestore()
-    .collection('Matches2')
+    .collection('Matches')
     .add(match)}
 catch(error : any){
   console.log(error)

@@ -164,7 +164,7 @@ const AddMatchScreen = () => {
         </View>
         <DatePicker
           modal
-          mode="date"
+          mode="datetime"
           open={modalOpen}
           date={new Date()}
           onConfirm={date => {
