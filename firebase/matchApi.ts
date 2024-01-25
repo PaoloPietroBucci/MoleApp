@@ -101,3 +101,56 @@ catch(error : any){
   console.log(error)
 }
 }
+
+export async function updateMatchScore(match: Match): Promise<void> {
+  try {
+    await firestore()
+
+    const querySnapshot = await firestore()
+    .collection('Matches')
+    .where('team1', '==', match.team1)
+    .where('team2', '==', match.team2)
+    .where('date', '==', match.date)
+    .where('round', '==', match.round)
+    .get();
+
+    if (!querySnapshot.empty) {
+      // Si suppone che ci sia solo un documento corrispondente
+      const docRef = querySnapshot.docs[0].ref;
+
+      await docRef.update({
+        goalTeam1: match.goalTeam1,
+        goalTeam2: match.goalTeam2,
+        penalties: match.penalties,
+        penaltyGoalTeam1: match.penaltyGoalTeam1,
+        penaltyGoalTeam2: match.penaltyGoalTeam2
+      });
+      console.log('Partita aggiornata con successo.');
+    } else {
+      console.log('Nessuna partita trovata con i criteri specificati.');
+    }
+  } catch (error: any) {
+    console.error('Errore durante l\'aggiornamento del goal della partita:', error);
+    throw error;
+  }
+}
+
+export async function getMatchesWithoutScores(): Promise<Match[]> {
+  let now = firestore.Timestamp.fromDate(new Date());
+  var matches: Match[] = [];
+  try {
+    const snapshot = await firestore()
+      .collection('Matches')
+      .where('goalTeam1', '==', null)
+      .where('goalTeam2', '==', null)
+      .where('date', '<=', now)
+      .get();
+    snapshot.forEach(document => {
+      matches.push(document.data() as Match);
+    });
+    return matches;
+  } catch (error: any) {
+    console.log(error);
+    throw Error(error);
+  }
+}
