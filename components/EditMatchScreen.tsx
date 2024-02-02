@@ -1,24 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import {styles} from '../styles';
-import Team from '../model/Team';
-import {getTeams} from '../firebase/teamApi';
 import {Picker} from '@react-native-picker/picker';
 import {TextInput} from 'react-native';
-import DatePicker from 'react-native-date-picker';
-import AntIcon from 'react-native-vector-icons/AntDesign';
-import {addMatch} from '../firebase/matchApi';
+import {getMatchesWithoutScores, updateMatchScore} from '../firebase/matchApi';
 import Match from '../model/Match';
 import {CheckBox} from 'react-native-elements';
-import {validateNewMatchForm} from '../services/validateInput';
+import { validateScoreEditMatch } from '../services/validateInput';
 
 const AddMatchScreen = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [teams, setTeams] = useState<Team[]>();
-  const [team1, setTeam1] = useState<string>();
-  const [team2, setTeam2] = useState<string>();
-  const [round, setRound] = useState<string>('group');
-  const [matchDate, setMatchDate] = useState<Date>();
+  const [matches, setMatches] = useState<Match[]>();
+  const [match, setMatch] = useState<Match>();
   const [goalTeam1, setGolTeam1] = useState<number>();
   const [goalTeam2, setGolTeam2] = useState<number>();
   const [penaltyGoaloalTeam1, setPenaltyGolTeam1] = useState<number>();
@@ -26,14 +18,9 @@ const AddMatchScreen = () => {
   const [penalties, setPenalties] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const rounds = ['group', 'quarters', 'semifinals', 'finals'];
 
   const handleSubmin = async () => {
-    const result = validateNewMatchForm(
-      team1!,
-      team2!,
-      matchDate!,
-      round!,
+    const result = validateScoreEditMatch(
       goalTeam1!,
       goalTeam2!,
       penalties,
@@ -44,30 +31,26 @@ const AddMatchScreen = () => {
       setError(result);
     } else {
       setError(undefined)
-      const newMatch: Match = {
-        team1: team1!,
-        team2: team2!,
-        date: matchDate!,
-        round: round!,
-        goalTeam1: goalTeam1,
-        goalTeam2: goalTeam2,
-        penalties: penalties!,
-        penaltyGoalTeam1: penaltyGoaloalTeam1,
-        penaltyGoalTeam2: penaltyGoaloalTeam2,
-      };
-      setTeam1(teams![0].name),
-      setTeam2(teams![0].name),
-      setRound('group'),
-      setMatchDate(undefined),
-      setGolTeam1(undefined),
-      setGolTeam2(undefined),
-      setPenalties(false),
-      setPenaltyGolTeam1(undefined),
-      setPenaltyGolTeam2(undefined),
-      setIsChecked(false)
-
+      
       try {
-        await addMatch(newMatch);
+
+        if(match != undefined){
+          match.goalTeam1 = goalTeam1,
+          match.goalTeam2 = goalTeam2,
+          match.penalties = penalties,
+          match.penaltyGoalTeam1 = penaltyGoaloalTeam1,
+          match.penaltyGoalTeam2 = penaltyGoaloalTeam2
+
+          await updateMatchScore(match);
+        }
+
+        setGolTeam1(undefined),
+        setGolTeam2(undefined),
+        setPenalties(false),
+        setPenaltyGolTeam1(undefined),
+        setPenaltyGolTeam2(undefined),
+        setIsChecked(false)
+
       } catch (error: any) {
         console.log(error);
       }
@@ -79,23 +62,15 @@ const AddMatchScreen = () => {
     setPenalties(true);
   };
 
-  function handlePicker1Change(team: string) {
-    setTeam1(team);
-  }
-  function handlePicker2Change(team: string) {
-    setTeam2(team);
-  }
-  function handlePicker3Change(round: string) {
-    setRound(round);
+  function handlePickerChange(match: Match) {
+    setMatch(match);
   }
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const allTeams = await getTeams();
-        setTeam1(allTeams[0].name);
-        setTeam2(allTeams[0].name);
-        setTeams(allTeams);
+        const allMatches = await getMatchesWithoutScores();
+        setMatches(allMatches)
       } catch (error: any) {
         console.log(error);
       }
@@ -103,27 +78,15 @@ const AddMatchScreen = () => {
     fetch();
   }, []);
 
-  if (teams !== undefined) {
+  if (matches !== undefined) {
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={[styles.title, {fontSize: 42}]}>Add a new match</Text>
+        <Text style={[styles.title, {fontSize: 42}]}>Edit a match</Text>
         {error && (
           <View>
             <Text style={styles.error}>{error}</Text>
           </View>
         )}
-        <View style={addMatchStyle.dateContainer}>
-          <TextInput style={addMatchStyle.dateInput} editable={false}>
-            {matchDate ? matchDate?.toDateString() : 'Select match date'}
-          </TextInput>
-          <TouchableOpacity
-            onPress={() => setModalOpen(true)}
-            style={{
-              marginLeft: 10,
-            }}>
-            <AntIcon name="calendar" color="black" size={30} />
-          </TouchableOpacity>
-        </View>
         <View
           style={[
             addMatchStyle.picker,
@@ -136,46 +99,14 @@ const AddMatchScreen = () => {
               justifyContent: 'center',
             },
           ]}>
-          <Picker selectedValue={round} onValueChange={handlePicker3Change}>
-            {rounds!.map((round, index) => (
-              <Picker.Item key={index} label={round} value={round} />
+          <Picker selectedValue={match} onValueChange={handlePickerChange}>
+            {matches!.map((match, index) => (
+              <Picker.Item key={index} label={match.team1+'-'+match.team2+' '+match.date.toString()} value={match} />
             ))}
           </Picker>
         </View>
-        <View style={[addMatchStyle.row]}>
-          <View style={addMatchStyle.picker}>
-            <Picker selectedValue={team1} onValueChange={handlePicker1Change}>
-              {teams!.map((team, index) => (
-                <Picker.Item key={index} label={team.name} value={team.name} />
-              ))}
-            </Picker>
-          </View>
-          <View style={addMatchStyle.separator}>
-            <Text style={{textAlign: 'center'}}> - </Text>
-          </View>
-          <View style={addMatchStyle.picker}>
-            <Picker selectedValue={team2} onValueChange={handlePicker2Change}>
-              {teams!.map((team, index) => (
-                <Picker.Item key={index} label={team.name} value={team.name} />
-              ))}
-            </Picker>
-          </View>
-        </View>
-        <DatePicker
-          modal
-          mode="datetime"
-          open={modalOpen}
-          date={new Date()}
-          onConfirm={date => {
-            setModalOpen(false);
-            setMatchDate(date);
-          }}
-          onCancel={() => {
-            setModalOpen(false);
-          }}
-        />
-
-        {matchDate! < new Date() && !undefined ? (
+        
+        {match !== undefined ?(
           <View>
             <View style={[addMatchStyle.row]}>
               <TextInput
@@ -198,7 +129,7 @@ const AddMatchScreen = () => {
                   setGolTeam2(parseInt(score));
                 }}></TextInput>
             </View>
-            {round !== 'group' ? (
+            {match !== undefined && match.round !== 'group' ? (
               <View style={[addMatchStyle.row, {width:350}]}>
                 <CheckBox disabled = {goalTeam1 == goalTeam2? false : true}
                   title="Penalties"
@@ -235,9 +166,9 @@ const AddMatchScreen = () => {
               <></>
             )}
           </View>
-        ) : (
-          <></>
-        )}
+          ) : (
+            <></>
+          )}
         <View>
           <TouchableOpacity style={styles.button} onPress={handleSubmin}>
             <Text style={styles.buttonText}>Submit</Text>
@@ -247,16 +178,11 @@ const AddMatchScreen = () => {
     );
   } else {
     return;
-    <Text>team undefined</Text>;
+    <Text>match undefined</Text>;
   }
 };
 
 const addMatchStyle = StyleSheet.create({
-  dateContainer: {
-    margin: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
 
   dateInput: {
     width: 250,

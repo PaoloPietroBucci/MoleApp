@@ -17,43 +17,6 @@ const QuarterFinlas = () => {
     const fetchTeams = async () => {
       try {
         var matches: Match[] | any = await getMatchesByRound('quarters');
-        // matches = [
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     groupMatch: true,
-        //     penalties: false,
-        //     team1: 'Alfieri',
-        //     team2: 'Gioberti',
-        //   },
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     penalties: false,
-        //     team1: "Sant'Anna",
-        //     team2: 'Berti',
-        //   },
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     groupMatch: true,
-        //     penalties: false,
-        //     team1: 'Gioberti',
-        //     team2: 'Galfer',
-        //   },
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     groupMatch: true,
-        //     penalties: false,
-        //     team1: 'Convitto',
-        //     team2: 'Majorana',
-        //   },
-        // ];
         const logos: {[key: string]: string} = {};
         await Promise.all(
           matches.map(async (match: any) => {

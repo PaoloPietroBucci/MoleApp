@@ -58,5 +58,31 @@ export function validateNewMatchForm(
   return 'valid'; // Nessun campo mancante
 }
 
+export function validateScoreEditMatch(
+  goalTeam1: number,
+  goalTeam2: number,
+  penalties?: boolean,
+  penaltyGoalTeam1?: number,
+  penaltyGoalTeam2?: number,
+): string{
+  
+  if(goalTeam1 === undefined || goalTeam2 === undefined){
+    return 'Complete the score of the match'
+  }
+  if((goalTeam1 < 0) || goalTeam2 < 0 || isNaN(goalTeam1) || isNaN(goalTeam2)){
+    return 'The score must be a number > 0'
+  }
+
+  if(penalties === true){
+    if(penaltyGoalTeam1 === undefined || penaltyGoalTeam2 === undefined){
+      return 'Complete the score of the penalties'
+    }
+    if(penaltyGoalTeam1 < 0 || penaltyGoalTeam2 < 0 || isNaN(penaltyGoalTeam1) || isNaN(penaltyGoalTeam2) ){
+      return 'The score must be a number > 0'
+    }
+  }
+  return 'valid'; // Nessun campo mancante
+}
+
 
 

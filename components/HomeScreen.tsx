@@ -20,10 +20,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { authContext } from '../App';
 import AddMatchScreen from './AddMatchScreen';
 import { ScrollView } from 'react-native-gesture-handler';
+import EditMatchScreen from './EditMatchScreen';
 
 function HomeScreen() {
   const {user, setUser} = useContext(authContext)
   const [showModal, setShowModal] = useState(false)
+  const [showModalEdit, setShowModalEdit] = useState(false)
   const [futureMatches, setfutureMatches] = useState<Match[]>();
   const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
 
@@ -93,7 +95,7 @@ function HomeScreen() {
         data={futureMatches}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}>
-        </FlatList>
+      </FlatList>
         {user?.admin &&<Pressable
             onPress={() => setShowModal(true)}>
         <View style={homeStyles.iconContainer}>
@@ -106,12 +108,32 @@ function HomeScreen() {
         onRequestClose={() => {
           setShowModal(false);
         }}>
-          <View>
+        <View>
           <TouchableOpacity style={[styles.button, {width: 70, borderRadius: 1000}]} onPress={() => setShowModal(false)}>
-          <Text style={[styles.buttonText]}>X</Text>
-        </TouchableOpacity>
+            <Text style={[styles.buttonText]}>X</Text>
+          </TouchableOpacity>
         </View>
         <AddMatchScreen></AddMatchScreen>
+      </Modal>
+
+      {user?.admin &&<Pressable
+            onPress={() => setShowModalEdit(true)}>
+        <View style={homeStyles.iconContainer}>
+        <MaterialIcons name='edit' size={30}></MaterialIcons>
+        </View>
+        </Pressable>}
+        <Modal
+        animationType="slide"
+        visible={showModalEdit}
+        onRequestClose={() => {
+          setShowModalEdit(false);
+        }}>
+        <View>
+          <TouchableOpacity style={[styles.button, {width: 70, borderRadius: 1000}]} onPress={() => setShowModalEdit(false)}>
+            <Text style={[styles.buttonText]}>X</Text>
+          </TouchableOpacity>
+        </View>
+        <EditMatchScreen></EditMatchScreen>
       </Modal>
     </SafeAreaView>
   );
