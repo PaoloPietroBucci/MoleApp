@@ -88,7 +88,7 @@ const teamStyle = StyleSheet.create({
   },
   modalContent:{
     width: screenWidth*0.8,
-    height: screenHeight*0.9,
+    height: screenHeight*0.8,
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
