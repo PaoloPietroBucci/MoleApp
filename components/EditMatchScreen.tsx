@@ -32,16 +32,25 @@ const AddMatchScreen = () => {
     } else {
       setError(undefined)
       
-      setGolTeam1(undefined),
-      setGolTeam2(undefined),
-      setPenalties(false),
-      setPenaltyGolTeam1(undefined),
-      setPenaltyGolTeam2(undefined),
-      setIsChecked(false)
-
       try {
 
-        if(match != undefined){await updateMatchScore(match);}
+        if(match != undefined){
+          match.goalTeam1 = goalTeam1,
+          match.goalTeam2 = goalTeam2,
+          match.penalties = penalties,
+          match.penaltyGoalTeam1 = penaltyGoaloalTeam1,
+          match.penaltyGoalTeam2 = penaltyGoaloalTeam2
+
+          await updateMatchScore(match);
+        }
+
+        setGolTeam1(undefined),
+        setGolTeam2(undefined),
+        setPenalties(false),
+        setPenaltyGolTeam1(undefined),
+        setPenaltyGolTeam2(undefined),
+        setIsChecked(false)
+
       } catch (error: any) {
         console.log(error);
       }
@@ -55,11 +64,6 @@ const AddMatchScreen = () => {
 
   function handlePickerChange(match: Match) {
     setMatch(match);
-    match.goalTeam1 = goalTeam1,
-    match.goalTeam2 = goalTeam2,
-    match.penalties = penalties,
-    match.penaltyGoalTeam1 = penaltyGoaloalTeam1,
-    match.penaltyGoalTeam1 = penaltyGoaloalTeam2
   }
 
   useEffect(() => {
@@ -97,12 +101,12 @@ const AddMatchScreen = () => {
           ]}>
           <Picker selectedValue={match} onValueChange={handlePickerChange}>
             {matches!.map((match, index) => (
-              <Picker.Item key={index} label={match.toString()} value={match} />
+              <Picker.Item key={index} label={match.team1+'-'+match.team2+' '+match.date.toString()} value={match} />
             ))}
           </Picker>
         </View>
         
-        if(match !== undefined){
+        {match !== undefined ?(
           <View>
             <View style={[addMatchStyle.row]}>
               <TextInput
@@ -162,7 +166,9 @@ const AddMatchScreen = () => {
               <></>
             )}
           </View>
-          }
+          ) : (
+            <></>
+          )}
         <View>
           <TouchableOpacity style={styles.button} onPress={handleSubmin}>
             <Text style={styles.buttonText}>Submit</Text>

@@ -7,7 +7,6 @@ import {Picker} from '@react-native-picker/picker';
 import {TextInput} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import {addUser} from '../firebase/userApi';
 import {addMatch} from '../firebase/matchApi';
 import Match from '../model/Match';
 import {CheckBox} from 'react-native-elements';
@@ -48,7 +47,7 @@ const AddMatchScreen = () => {
       const newMatch: Match = {
         team1: team1!,
         team2: team2!,
-        date: matchDate,
+        date: matchDate!,
         round: round!,
         goalTeam1: goalTeam1,
         goalTeam2: goalTeam2,

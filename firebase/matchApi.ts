@@ -118,19 +118,27 @@ export async function updateMatchScore(match: Match): Promise<void> {
       // Si suppone che ci sia solo un documento corrispondente
       const docRef = querySnapshot.docs[0].ref;
 
-      await docRef.update({
-        goalTeam1: match.goalTeam1,
-        goalTeam2: match.goalTeam2,
-        penalties: match.penalties,
-        penaltyGoalTeam1: match.penaltyGoalTeam1,
-        penaltyGoalTeam2: match.penaltyGoalTeam2
-      });
+      if(match.penalties === false){
+        await docRef.update({
+          goalTeam1: match.goalTeam1,
+          goalTeam2: match.goalTeam2,
+          penalties: match.penalties,
+        });
+      }else{
+        await docRef.update({
+          goalTeam1: match.goalTeam1,
+          goalTeam2: match.goalTeam2,
+          penalties: match.penalties,
+          penaltyGoalTeam1: match.penaltyGoalTeam1,
+          penaltyGoalTeam2: match.penaltyGoalTeam2
+        });
+      }
       console.log('Partita aggiornata con successo.');
     } else {
       console.log('Nessuna partita trovata con i criteri specificati.');
     }
   } catch (error: any) {
-    console.error('Errore durante l\'aggiornamento del goal della partita:', error);
+    console.error('Error while updating the match scores:', error);
     throw error;
   }
 }
