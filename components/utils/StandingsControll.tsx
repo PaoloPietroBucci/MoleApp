@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity, Text, Dimensions} from 'react-native';
 import {styles} from '../../styles';
 import FontIcon from 'react-native-vector-icons/FontAwesome5';
+import DeviceInfo from 'react-native-device-info';
 const StandingsContoll = ({
   navigation,
   prev,
@@ -13,8 +14,9 @@ const StandingsContoll = ({
   next?: string;
   current: string;
 }) => {
+  const screenWidth =  Dimensions.get('window').width
   return (
-    <View style={styles.navigationControlls}>
+    <View style={DeviceInfo.isTablet()?[styles.navigationControlls, {width:screenWidth * 0.6}]:styles.navigationControlls}>
       {prev === undefined && <View></View>}
       {prev !== undefined && (
         <TouchableOpacity

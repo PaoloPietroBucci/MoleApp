@@ -20,6 +20,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {authContext} from '../App';
 import AddMatchScreen from './AddMatchScreen';
 import EditMatchScreen from './EditMatchScreen';
+import DeviceInfo from 'react-native-device-info';
 
 function HomeScreen() {
   const {user} = useContext(authContext);
@@ -53,7 +54,7 @@ function HomeScreen() {
     const urlTeam2 = teamLogos[item.team2];
     return (
       <>
-        <View style={homeStyles.matchContainer}>
+        <View style={DeviceInfo.isTablet()? homeStyles.tabletMatchContainer:homeStyles.matchContainer}>
           <Text style={homeStyles.date}>
             {item!.date.toDate().toDateString()}
           </Text>
@@ -86,11 +87,13 @@ function HomeScreen() {
   return (
     <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}> Home </Text>
-      <Text style={{fontSize: 15, fontWeight: '800'}}>Upcoming Matches</Text>
+      <Text style={DeviceInfo.isTablet() ? {fontSize: 30, fontWeight: '800'}:{fontSize: 15, fontWeight: '800'}}>Upcoming Matches</Text>
       <FlatList
         data={futureMatches}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}></FlatList>
+        keyExtractor={(item, index) => index.toString()}
+        numColumns={DeviceInfo.isTablet() ? 2 : 0}>
+        </FlatList>
       {user?.admin && (
         <View style={styles.rowContainer}>
         <Pressable onPress={() => setShowModal(true)}>
@@ -148,6 +151,15 @@ const homeStyles = StyleSheet.create({
     height: 120,
     width: screenWidth * 0.8,
     marginVertical: 10,
+    borderRadius: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  tabletMatchContainer: {
+    height: 200,
+    width: 300,
+    marginHorizontal:30,
+    marginVertical: 20,
     borderRadius: 10,
     borderColor: 'gray',
     borderWidth: 1,

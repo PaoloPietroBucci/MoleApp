@@ -13,6 +13,15 @@ const matchStyles = StyleSheet.create({
       borderWidth: 1,
     },
   
+    tabletMatchContainer: {
+      height: 120,
+      width: screenWidth * 0.6,
+      marginVertical: 10,
+      borderRadius: 10,
+      borderColor: 'gray',
+      borderWidth: 1,
+    },
+  
     teamsContainer: {
       display: 'flex',
       flex: 1,

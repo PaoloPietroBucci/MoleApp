@@ -9,9 +9,8 @@ import {
   Alert,
 } from 'react-native';
 import {View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 import {styles} from '../styles';
 import {validateLogInForm} from '../services/validateInput';
 
@@ -28,8 +27,8 @@ const LogInScreen = () => {
     } else {
       try {
         await auth().signInWithEmailAndPassword(username, password);
-      } catch (error) {
-        setErrors(errors);
+      } catch (error:any) {
+        setErrors(error.message);
       }
     }
   }

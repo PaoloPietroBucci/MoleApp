@@ -11,6 +11,7 @@ import SignInScreen from './components/SignInScreen';
 import {SplashScreen} from './components/SplashScreen';
 import PresentationSreen from './components/PresentationScreen';
 import { addPlayersByTeam } from './firebase/playerApi';
+import { Appearance } from 'react-native';
 
 interface AuthContextData {
   season: number | undefined
@@ -34,6 +35,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const bootApp = async () => {
+      const deviceMode = Appearance.setColorScheme('light')
       const subscriber = auth().onAuthStateChanged(authStateChangedAction);
       setTimeout(() => {
         setShowSplash(false);

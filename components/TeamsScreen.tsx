@@ -1,22 +1,30 @@
 import {useEffect, useState} from 'react';
-import {Dimensions, FlatList, Image, Modal, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import Team from '../model/Team';
 import {getTeams} from '../firebase/teamApi';
 import {styles} from '../styles';
 import {Pressable} from 'react-native';
 import PlayersScreen from './PlayersScreen';
+import DeviceInfo from 'react-native-device-info';
 
 const TeamsScreen = () => {
   const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
     const fetchTeams = async () => {
-      try{
-      const teams = await getTeams();
-      setTeams(teams);
-      }
-      catch(error){}
+      try {
+        const teams = await getTeams();
+        setTeams(teams);
+      } catch (error) {}
     };
     fetchTeams();
   }, []);
@@ -36,12 +44,17 @@ const TeamsScreen = () => {
           onPress={() => {
             openSettingsModal(item.name);
           }}>
-          <View style={styles.bigLogoContainer}>
+          <View
+            style={
+              DeviceInfo.isTablet()
+                ? styles.tabletBigLogoContainer
+                : styles.bigLogoContainer
+            }>
             <Image
               source={{uri: item.logoURL}}
               style={styles.logoImage}></Image>
           </View>
-          <Text style={{textAlign:'center'}}> {item.name} </Text>
+          <Text style={{textAlign: 'center'}}> {item.name} </Text>
         </Pressable>
       </View>
     );
@@ -51,28 +64,32 @@ const TeamsScreen = () => {
     <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}> Teams </Text>
       <Modal
-      transparent={true}
+        transparent={true}
         animationType="slide"
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-        }}> 
-        <View style={teamStyle.modalCntainer}>
-        <View style={teamStyle.modalContent}>
-          <PlayersScreen teamName={modalParam}></PlayersScreen>
-          <Pressable
-            style={[styles.button]}
-            onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.buttonText}>Close</Text>
-          </Pressable>
+        }}>
+        <View style={teamStyle.modalContainer}>
+          <View style={
+              DeviceInfo.isTablet()
+                ? teamStyle.tabletModalContent
+                : teamStyle.modalContent
+            }>
+            <PlayersScreen teamName={modalParam}></PlayersScreen>
+            <Pressable
+              style={[styles.button]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </Pressable>
           </View>
-          </View>
+        </View>
       </Modal>
       <FlatList<Team>
         data={teams}
         renderItem={renderItem}
         keyExtractor={item => item.name}
-        numColumns={3}
+        numColumns={DeviceInfo.isTablet() ? 4 : 3}
       />
     </SafeAreaView>
   );
@@ -80,21 +97,30 @@ const TeamsScreen = () => {
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const teamStyle = StyleSheet.create({
-  modalCntainer:{
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.)'
+    backgroundColor: 'rgba(0, 0, 0, 0.)',
   },
-  modalContent:{
-    width: screenWidth*0.8,
-    height: screenHeight*0.8,
+  modalContent: {
+    width: screenWidth * 0.8,
+    height: screenHeight * 0.8,
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  tabletModalContent: {
+    width: screenWidth * 0.5,
+    height: screenHeight * 0.8,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default TeamsScreen;

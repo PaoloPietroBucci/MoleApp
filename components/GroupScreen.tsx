@@ -17,10 +17,11 @@ import {calculateStat} from '../services/rankingCalc';
 import {getTeamLogoUrl, getTeams, getTeamsByGroup} from '../firebase/teamApi';
 import {Picker} from '@react-native-picker/picker';
 import {authContext} from '../App';
+import DeviceInfo from 'react-native-device-info';
 
 const GroupHeader: React.FC<{groupName: string}> = ({groupName}) => {
   return (
-    <View style={groupStyles.groupHeader}>
+    <View style={DeviceInfo.isTablet()?[groupStyles.tabletGroupHeader]:groupStyles.groupHeader}>
       <View style={groupStyles.leftSide}>
         <Text style={[groupStyles.headerField, {width: 100}]}>{groupName}</Text>
       </View>
@@ -88,13 +89,13 @@ const GroupScreen = ({route}: {route: any}) => {
 
   if (IsLoading) {
     return (
-      <SafeAreaView style={[styles.pageContainer]}>
+      <SafeAreaView style={[styles.pageContainer,{alignItems:'center', justifyContent:'center'}]}>
         <ActivityIndicator size={100} color="rgba(236, 30, 78, 0.95)" />
       </SafeAreaView>
     );
   } else {
     return (
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <Text style={styles.title}> Standings </Text>
         <View style={[styles.rowContainer,{flex:1}]}>
           <Text style={{fontWeight:'600', fontSize: 18}}>Season : </Text>
@@ -121,17 +122,17 @@ const GroupScreen = ({route}: {route: any}) => {
           next="quarterFinals"
           current="Group Stage"></StandingsContoll>
         {/*Group A*/}
-        <View style={groupStyles.group}>
+        <View style={DeviceInfo.isTablet()?groupStyles.tabletGroup:groupStyles.group}>
           <GroupHeader groupName="Group A"></GroupHeader>
           {renderListItems(groupA)}
         </View>
         {/*Group B*/}
-        <View style={groupStyles.group}>
+        <View style={DeviceInfo.isTablet()?groupStyles.tabletGroup:groupStyles.group}>
           <GroupHeader groupName="Group B"></GroupHeader>
           {renderListItems(groupB)}
         </View>
         {/*Group C*/}
-        <View style={groupStyles.group}>
+        <View style={DeviceInfo.isTablet()?groupStyles.tabletGroup:groupStyles.group}>
           <GroupHeader groupName="Group C"></GroupHeader>
           {renderListItems(groupC)}
         </View>
@@ -149,12 +150,16 @@ const groupStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 8,
+    marginVertical: 15,
   },
   teamName: {fontWeight: 'bold', marginHorizontal: 8},
   stat: {fontWeight: 'bold', width: 40, textAlign: 'center'},
   group: {
     width: screenWidth * 0.8,
+    marginBottom: 20,
+  },
+  tabletGroup: {
+    width: screenWidth * 0.6,
     marginBottom: 20,
   },
   groupHeader: {
@@ -164,6 +169,15 @@ const groupStyles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 15,
     width: screenWidth * 0.8,
+    height: 40,
+  },
+  tabletGroupHeader: {
+    backgroundColor: 'black',
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'row',
+    borderRadius: 15,
+    width: screenWidth * 0.6,
     height: 40,
   },
   headerField: {

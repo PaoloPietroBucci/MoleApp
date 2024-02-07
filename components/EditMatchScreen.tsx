@@ -18,6 +18,7 @@ const EditMatchScreen = () => {
   const [penalties, setPenalties] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState<string | undefined>();
+  const [IsLoading, setIsLoading] = useState<boolean>(true)
 
   const handleSubmin = async () => {
     const result = validateScoreEditMatch(
@@ -72,6 +73,7 @@ const EditMatchScreen = () => {
         const allMatches = await getMatchesWithoutScores();
         setMatches(allMatches)
         setMatch(allMatches[0])
+        setIsLoading(false)
       } catch (error: any) {
         console.log(error);
       }
@@ -102,7 +104,7 @@ const EditMatchScreen = () => {
           ]}>
           <Picker selectedValue={match} onValueChange={handlePickerChange}>
             {matches!.map((match, index) => (
-              <Picker.Item key={index} label={match.team1+'-'+match.team2+' '+match.date.toDate()} value={match} />
+              <Picker.Item key={index} label={match.team1+'-'+match.team2+' ('+match.date.toDate().toDateString()+')'} value={match} />
             ))}
           </Picker>
         </View>
@@ -177,7 +179,7 @@ const EditMatchScreen = () => {
         </View>
       </ScrollView>
     )
-  } else {
+  } else if (!IsLoading){
     return <Text>match undefined</Text>;
   }
 };

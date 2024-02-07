@@ -7,12 +7,13 @@ import {
   View,
 } from 'react-native';
 import {Text} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useContext, useEffect, useState} from 'react';
 import {authContext} from '../App';
 import storage from '@react-native-firebase/storage';
 import {styles} from '../styles';
+import DeviceInfo from 'react-native-device-info';
 
 const ProfileScreen = () => {
   const {user, setUser} = useContext(authContext);
@@ -49,12 +50,12 @@ const ProfileScreen = () => {
             : require('../assets/NoPhoto.webp')
         }
         style={profileStyle.profileImage}></Image>
-      <View  style={profileStyle.fieldContainer}>
+      <View  style={DeviceInfo.isTablet()?[profileStyle.fieldContainer,{width:screenWidth*0.6}]:profileStyle.fieldContainer}>
         <Text adjustsFontSizeToFit style={profileStyle.userData}>
           {`${user?.name}  ${user?.surname}`}
         </Text>
       </View>
-      <View style={profileStyle.fieldContainer}>
+      <View style={DeviceInfo.isTablet()?[profileStyle.fieldContainer,{width:screenWidth*0.6}]:profileStyle.fieldContainer}>
         <Text style={profileStyle.userData}>
           { (user!.dateOfBirth instanceof  Date) ? user!.dateOfBirth.toLocaleString('it-IT', {
             day: '2-digit',
@@ -68,7 +69,7 @@ const ProfileScreen = () => {
           })}
         </Text>
       </View>
-      <View style={profileStyle.fieldContainer}>
+      <View style={DeviceInfo.isTablet()?[profileStyle.fieldContainer,{width:screenWidth*0.6}]:profileStyle.fieldContainer}>
         <Text adjustsFontSizeToFit style={[profileStyle.userData, {fontSize:25}]}> {user!.email} </Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogOut}>
@@ -90,17 +91,18 @@ const profileStyle = StyleSheet.create({
     color: 'black',
   },
   profileImage: {
+    flex:2,
     marginBottom: 15,
     width: screenHeight / 4,
     height: screenHeight / 4,
     borderRadius: screenHeight / 8,
   },
   fieldContainer:{
+    flex:1,
     display:'flex',
     justifyContent:'center',
     marginVertical:5,
     width : screenWidth*0.8,
-    height: screenWidth*0.2,
     borderRadius:10,
     borderWidth:1
   }

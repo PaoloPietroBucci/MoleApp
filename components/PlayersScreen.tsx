@@ -31,16 +31,12 @@ const PlayersScreen = ({teamName}: {teamName: string}) => {
     return (
       <View
         style={[
-          styles.rowContainer,
-          {
-            width: Dimensions.get('window').width * 0.8,
-            height:30
-          },
+          styles.rowContainer, {width:'80%'}
         ]}>
-        <Text style={{fontWeight: '700', flex: 1.5, fontSize:14}}>
+        <Text style={{fontWeight: '700', fontSize: 17, flex:2}}>
           {item.name} {item.surname}
         </Text>
-        <Text style={{fontWeight: '700', flex: 1}}>
+        <Text style={{fontWeight: '700', fontSize: 17, flex:2}}>
           {item.birth.toDate().toLocaleString('it-IT', {
             day: '2-digit',
             month: '2-digit',

@@ -8,6 +8,7 @@ import Match from '../model/Match';
 import StandingsContoll from './utils/StandingsControll';
 import matchStyles from '../styles/matchStyle';
 import {getMatchesByRound} from '../firebase/matchApi';
+import DeviceInfo from 'react-native-device-info';
 
 const SemiFinlas = ({route}: {route: any}) => {
   const navigation = useNavigation<any>();
@@ -41,7 +42,7 @@ const SemiFinlas = ({route}: {route: any}) => {
     const urlTeam2 = teamLogos[item.team2];
     return (
       <>
-        <View style={matchStyles.matchContainer}>
+        <View style={DeviceInfo.isTablet()?matchStyles.tabletMatchContainer: matchStyles.matchContainer}>
         <Text style={matchStyles.date}>{item.date.toDate().toDateString()}</Text>
           <View style={matchStyles.teamsContainer}>
             <View style={matchStyles.leftTeamBox}>

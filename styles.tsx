@@ -1,8 +1,11 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Appearance, Dimensions, Platform, StyleSheet} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+
 
 const mainColor = 'rgba(236, 30, 78, 0.95)';
 const screenHeight = Dimensions.get('window').height;
 const screenWidth =  Dimensions.get('window').width
+const isTablet = DeviceInfo.isTablet();
 
 export const styles = StyleSheet.create({
     
@@ -16,7 +19,7 @@ export const styles = StyleSheet.create({
   scrollContainer:{
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   pageContainer: {
@@ -98,6 +101,16 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'black',
   },
+  tabletBigLogoContainer: {
+    width:150,
+    height:150,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+    borderWidth: 2,
+    borderColor: 'black',
+  },
   smallLogoContainer: {
     marginHorizontal: 10,
     width: 20,
@@ -120,6 +133,7 @@ export const styles = StyleSheet.create({
     textShadowRadius: 5,
     fontWeight:'bold',
     fontSize:25 },
+
   navigationControlls:{
     marginBottom:20,
     height:30,
@@ -127,6 +141,7 @@ export const styles = StyleSheet.create({
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
-     width:screenWidth*0.8
+    width:screenWidth*0.8
   }
+  
 });
