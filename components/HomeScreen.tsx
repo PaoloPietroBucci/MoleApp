@@ -15,59 +15,54 @@ import {styles} from '../styles';
 import {useContext, useEffect, useState} from 'react';
 import Match from '../model/Match';
 import {getFutureMatches} from '../firebase/matchApi';
-import { getTeamLogoUrl } from '../firebase/teamApi';
+import {getTeamLogoUrl} from '../firebase/teamApi';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { authContext } from '../App';
+import {authContext} from '../App';
 import AddMatchScreen from './AddMatchScreen';
-import { ScrollView } from 'react-native-gesture-handler';
 import EditMatchScreen from './EditMatchScreen';
 
 function HomeScreen() {
-  const {user, setUser} = useContext(authContext)
-  const [showModal, setShowModal] = useState(false)
-  const [showModalEdit, setShowModalEdit] = useState(false)
+  const {user} = useContext(authContext);
+  const [showModal, setShowModal] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   const [futureMatches, setfutureMatches] = useState<Match[]>();
-  const [teamLogos, setTeamLogos] = useState<{ [key: string]: string }>({});
+  const [teamLogos, setTeamLogos] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     const fetchFutureMatches = async () => {
-      try{
-      const matches = await getFutureMatches();
-      const logos : { [key: string]: string } = {}
-      await Promise.all(
-        matches.map(async (match) => {
-          const logoUrlTeam1 = await getTeamLogoUrl(match.team1);
-          const logoUrlTeam2 = await getTeamLogoUrl(match.team2);
-          logos[match.team1] = logoUrlTeam1;
-          logos[match.team2] = logoUrlTeam2;
-        })
-      );
-      setTeamLogos(logos)
-      setfutureMatches(matches);
-    }catch{
-      
-    }
+      try {
+        const matches = await getFutureMatches();
+        const logos: {[key: string]: string} = {};
+        await Promise.all(
+          matches.map(async match => {
+            const logoUrlTeam1 = await getTeamLogoUrl(match.team1);
+            const logoUrlTeam2 = await getTeamLogoUrl(match.team2);
+            logos[match.team1] = logoUrlTeam1;
+            logos[match.team2] = logoUrlTeam2;
+          }),
+        );
+        setTeamLogos(logos);
+        setfutureMatches(matches);
+      } catch {}
     };
     fetchFutureMatches();
   }, []);
 
-   function renderItem({item}: {item: Match}): any {
+  function renderItem({item}: {item: Match}): any {
     const urlTeam1 = teamLogos[item.team1];
     const urlTeam2 = teamLogos[item.team2];
     return (
       <>
         <View style={homeStyles.matchContainer}>
-          <Text style={homeStyles.date}>{item.date.toDate().toLocaleString('it-IT', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour:'2-digit',
-            minute:'2-digit'
-          })}</Text>
+          <Text style={homeStyles.date}>
+            {item!.date.toDate().toDateString()}
+          </Text>
           <View style={homeStyles.teamsContainer}>
             <View style={homeStyles.leftTeamBox}>
               <View style={styles.smallLogoContainer}>
-                <Image source={{uri:urlTeam1}} style={styles.smallLogoContainer}></Image>
+                <Image
+                  source={{uri: urlTeam1}}
+                  style={styles.smallLogoContainer}></Image>
               </View>
               <Text style={homeStyles.teamName}> {item.team1} </Text>
             </View>
@@ -76,7 +71,9 @@ function HomeScreen() {
             </View>
             <View style={homeStyles.rightTeamBox}>
               <View style={styles.smallLogoContainer}>
-              <Image source={{uri:urlTeam2}} style={styles.smallLogoContainer}></Image>
+                <Image
+                  source={{uri: urlTeam2}}
+                  style={styles.smallLogoContainer}></Image>
               </View>
               <Text style={homeStyles.teamName}> {item.team2} </Text>
             </View>
@@ -87,52 +84,48 @@ function HomeScreen() {
   }
 
   return (
-
     <SafeAreaView style={styles.pageContainer}>
       <Text style={styles.title}> Home </Text>
-      <Text style={{fontSize:15, fontWeight:'800'}}>Upcoming Matches</Text>
+      <Text style={{fontSize: 15, fontWeight: '800'}}>Upcoming Matches</Text>
       <FlatList
         data={futureMatches}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}>
-      </FlatList>
-        {user?.admin &&<Pressable
-            onPress={() => setShowModal(true)}>
+        keyExtractor={(item, index) => index.toString()}></FlatList>
+      {user?.admin && (
+        <View style={styles.rowContainer}>
+        <Pressable onPress={() => setShowModal(true)}>
+          <View style={homeStyles.iconContainer}>
+            <MaterialIcons name="add" size={30}></MaterialIcons>
+          </View>
+        </Pressable>
+        <Pressable onPress={() => setShowModalEdit(true)}>
         <View style={homeStyles.iconContainer}>
-        <MaterialIcons name='add' size={30}></MaterialIcons>
+          <MaterialIcons name="edit" size={30}></MaterialIcons>
         </View>
-        </Pressable>}
-        <Modal
+      </Pressable>
+      </View>
+      )}
+      <Modal
         animationType="slide"
         visible={showModal}
         onRequestClose={() => {
           setShowModal(false);
         }}>
         <View>
-          <TouchableOpacity style={[styles.button, {width: 70, borderRadius: 1000}]} onPress={() => setShowModal(false)}>
+          <TouchableOpacity
+            style={[styles.button, {width: 70, borderRadius: 1000}]}
+            onPress={() => setShowModal(false)}>
             <Text style={[styles.buttonText]}>X</Text>
           </TouchableOpacity>
         </View>
         <AddMatchScreen></AddMatchScreen>
       </Modal>
-
-      {user?.admin &&<Pressable
-            onPress={() => setShowModalEdit(true)}>
-        <View style={homeStyles.iconContainer}>
-        <MaterialIcons name='edit' size={30}></MaterialIcons>
-        </View>
-        </Pressable>}
-        <Modal
+      <Modal
         animationType="slide"
         visible={showModalEdit}
         onRequestClose={() => {
           setShowModalEdit(false);
         }}>
-        <View>
-          <TouchableOpacity style={[styles.button, {width: 70, borderRadius: 1000}]} onPress={() => setShowModalEdit(false)}>
-            <Text style={[styles.buttonText]}>X</Text>
-          </TouchableOpacity>
-        </View>
         <EditMatchScreen></EditMatchScreen>
       </Modal>
     </SafeAreaView>
@@ -141,15 +134,15 @@ function HomeScreen() {
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const homeStyles = StyleSheet.create({
-  iconContainer:{
-    marginBottom:20,
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'center',
-    height:50,
-    width:50,
-    borderRadius:25,
-    backgroundColor:'rgba(236, 30, 78, 0.95)'
+  iconContainer: {
+    marginBottom: 20,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(236, 30, 78, 0.95)',
   },
   matchContainer: {
     height: 120,
@@ -166,7 +159,7 @@ const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
-    marginBottom:20
+    marginBottom: 20,
   },
 
   leftTeamBox: {

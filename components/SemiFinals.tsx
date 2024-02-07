@@ -9,53 +9,17 @@ import StandingsContoll from './utils/StandingsControll';
 import matchStyles from '../styles/matchStyle';
 import {getMatchesByRound} from '../firebase/matchApi';
 
-const SemiFinlas = () => {
+const SemiFinlas = ({route}: {route: any}) => {
   const navigation = useNavigation<any>();
   const [matches, setMatches] = useState<Match[] | any>();
   const [teamLogos, setTeamLogos] = useState<{[key: string]: string}>({});
+  const {season} = route.params;
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        var matches: Match[] | any = await getMatchesByRound('semifinals');
+        var matches: Match[] | any = await getMatchesByRound('semifinals', season );
 
-        // matches = [
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     groupMatch: true,
-        //     penalties: false,
-        //     team1: 'Alfieri',
-        //     team2: 'Gioberti',
-        //   },
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     penalties: false,
-        //     team1: "Sant'Anna",
-        //     team2: 'Berti',
-        //   },
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     groupMatch: true,
-        //     penalties: false,
-        //     team1: 'Gioberti',
-        //     team2: 'Galfer',
-        //   },
-        //   {
-        //     date: new Date(),
-        //     goalTeam1: null,
-        //     goalTeam2: null,
-        //     groupMatch: true,
-        //     penalties: false,
-        //     team1: 'Convitto',
-        //     team2: 'Majorana',
-        //   },
-        // ];
         const logos: {[key: string]: string} = {};
         await Promise.all(
           matches.map(async (match: any) => {
@@ -112,10 +76,14 @@ const SemiFinlas = () => {
         current="Semi Finals"
         next="finals"
         prev="quarterFinals"></StandingsContoll>
-      <FlatList
-        data={matches}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}></FlatList>
+      {matches?.length === 0 ? (
+        <View><Text>No match scheduled yet</Text></View>
+      ) : (
+        <FlatList
+          data={matches}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}></FlatList>
+      )}
     </SafeAreaView>
   );
 };

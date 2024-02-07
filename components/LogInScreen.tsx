@@ -45,11 +45,13 @@ const LogInScreen = () => {
       )}
       <TextInput
         placeholder="Email"
+        keyboardType='email-address'
         style={styles.input}
         onChangeText={text => setUsername(text)}
       />
       <TextInput
         placeholder="Password"
+        secureTextEntry={true}
         style={styles.input}
         onChangeText={text => setPassword(text)}
       />

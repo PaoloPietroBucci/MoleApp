@@ -56,7 +56,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowContainer: {
-    width:'70%',
+    width:'50%',
     marginVertical: 15,
     display: 'flex',
     flex:1,

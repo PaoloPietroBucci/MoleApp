@@ -1,35 +1,40 @@
-import { getGroupMatchesByTeam, getGroupMatchesByTeam1 } from '../firebase/matchApi';
+import {
+  getGroupMatchesByTeam,
+  getGroupMatchesByTeam1,
+} from '../firebase/matchApi';
 import Match from '../model/Match';
 import Team from '../model/Team';
 
-export async function calculateStat(group: Team[]): Promise<Team[]> {
+export async function calculateStat(group: Team[], season: number): Promise<Team[]> {
   for (const team of group) {
-    try{
-    const matches: Match[] = await getGroupMatchesByTeam1(team.name);
-    for (const match of matches) {
-      if (match.team1 === team.name) {
-        team.totalGoals = (team.totalGoals || 0) + match.goalTeam1;
-        
-        if (match.goalTeam1 > match.goalTeam2) {
-          team.points += 3;
-        } else if (match.goalTeam1 === match.goalTeam2) {
-          team.points += 1;
+    try {
+      const matches: Match[] = await getGroupMatchesByTeam1(team.name, season);
+      for (const match of matches) {
+        if (match.goalTeam1 !== null && match.goalTeam2 !== null) {
+          if (match.team1 === team.name) {
+            team.totalGoals = (team.totalGoals || 0) + match.goalTeam1!;
+
+            if (match.goalTeam1! > match.goalTeam2!) {
+              team.points += 3;
+            } else if (match.goalTeam1 === match.goalTeam2) {
+              team.points += 1;
+            }
+          }
+
+          if (match.team2 === team.name) {
+            team.totalGoals = (team.totalGoals || 0) + match.goalTeam2!;
+
+            if (match.goalTeam2! > match.goalTeam1!) {
+              team.points += 3;
+            } else if (match.goalTeam1 === match.goalTeam2) {
+              team.points += 1;
+            }
+          }
         }
       }
-      
-      if (match.team2 === team.name) {
-        team.totalGoals = (team.totalGoals || 0) + match.goalTeam2;
-        
-        if (match.goalTeam2 > match.goalTeam1) {
-          team.points += 3;
-        } else if (match.goalTeam1 === match.goalTeam2) {
-          team.points += 1;
-        }
-      }
+    } catch (error) {
+      console.log(error);
     }
-  }catch(error){
-    console.log(error)
-  }
   }
 
   group.sort(sortByPoint);

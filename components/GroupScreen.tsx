@@ -9,80 +9,41 @@ import {
   View,
 } from 'react-native';
 import Team from '../model/Team';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {styles} from '../styles';
 import {useNavigation} from '@react-navigation/native';
 import StandingsContoll from './utils/StandingsControll';
 import {calculateStat} from '../services/rankingCalc';
 import {getTeamLogoUrl, getTeams, getTeamsByGroup} from '../firebase/teamApi';
+import {Picker} from '@react-native-picker/picker';
+import {authContext} from '../App';
 
 const GroupHeader: React.FC<{groupName: string}> = ({groupName}) => {
   return (
     <View style={groupStyles.groupHeader}>
       <View style={groupStyles.leftSide}>
-        <Text style={[groupStyles.headerField, {width:100}]}>{groupName}</Text>
+        <Text style={[groupStyles.headerField, {width: 100}]}>{groupName}</Text>
       </View>
       <View style={groupStyles.rightSide}>
-        <Text
-          style={[
-            groupStyles.headerField,
-          ]}>
-          PTS
-        </Text>
+        <Text style={[groupStyles.headerField]}>PTS</Text>
         <Text style={groupStyles.headerField}>GF</Text>
       </View>
     </View>
   );
 };
-const GroupScreen = () => {
+const GroupScreen = ({route}: {route: any}) => {
   const navigation = useNavigation<any>();
   const [teamLogos, setTeamLogos] = useState<{[key: string]: string}>({});
   const [IsLoading, setIsLoading] = useState(true);
   const [groupA, setGroupA] = useState<Team[]>([]);
   const [groupB, setGroupB] = useState<Team[]>([]);
   const [groupC, setGroupC] = useState<Team[]>([]);
+  const {season, setSeason} = useContext(authContext);
+  const seasons: number[] = [2023, 2024];
 
   useEffect(() => {
     const calculate = async () => {
       try {
-        // const teams = [
-        //   {
-        //     group: 'A',
-        //     logoURL: 'loghi/gioberti.png',
-        //     name: 'Gioberti',
-        //     penaltyGoals: 0,
-        //     players: '',
-        //     points: 0,
-        //     totalGoals: 0,
-        //   },
-        //   {
-        //     group: 'A',
-        //     logoURL: 'loghi/cattaneo.jpg',
-        //     name: 'Cattaneo',
-        //     penaltyGoals: 5,
-        //     players: '',
-        //     points: 0,
-        //     totalGoals: 0,
-        //   },
-        //   {
-        //     group: 'A',
-        //     logoURL: 'loghi/santorre.jpg',
-        //     name: 'Santorre',
-        //     penaltyGoals: 0,
-        //     players: '',
-        //     points: 0,
-        //     totalGoals: 0,
-        //   },
-        //   {
-        //     group: 'A',
-        //     logoURL: 'loghi/logo santanna.png',
-        //     name: "Sant'Anna",
-        //     penaltyGoals: 4,
-        //     players: '',
-        //     points: 0,
-        //     totalGoals: 0,
-        //   },
-        // ];
         const teams = await getTeams();
         const logos: {[key: string]: string} = {};
         await Promise.all(
@@ -92,19 +53,16 @@ const GroupScreen = () => {
           }),
         );
         setTeamLogos(logos);
-        setGroupA(await calculateStat(await getTeamsByGroup('A')));
-        setGroupB(await calculateStat(await getTeamsByGroup('B')));
-        setGroupC(await calculateStat(await getTeamsByGroup('C')));
-          setIsLoading(false);
-        // setGroupA(teams);
-        // setGroupB(teams);
-        // setGroupC(teams);
+        setGroupA(await calculateStat(await getTeamsByGroup('A'), season!));
+        setGroupB(await calculateStat(await getTeamsByGroup('B'), season!));
+        setGroupC(await calculateStat(await getTeamsByGroup('C'), season!));
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     calculate();
-  }, []);
+  }, [season]);
 
   const renderListItems = (data: Team[]) => {
     return data.map((item, index) => (
@@ -121,7 +79,7 @@ const GroupScreen = () => {
           <Text style={groupStyles.teamName}>{item.name}</Text>
         </View>
         <View style={groupStyles.rightSide}>
-          <Text style={groupStyles.stat }>{item.points}</Text>
+          <Text style={groupStyles.stat}>{item.points}</Text>
           <Text style={groupStyles.stat}>{item.totalGoals}</Text>
         </View>
       </View>
@@ -130,7 +88,7 @@ const GroupScreen = () => {
 
   if (IsLoading) {
     return (
-      <SafeAreaView style={[styles.pageContainer, {justifyContent:'center'}]}>
+      <SafeAreaView style={[styles.pageContainer]}>
         <ActivityIndicator size={100} color="rgba(236, 30, 78, 0.95)" />
       </SafeAreaView>
     );
@@ -138,6 +96,25 @@ const GroupScreen = () => {
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}> Standings </Text>
+        <View style={[styles.rowContainer,{flex:1}]}>
+          <Text style={{fontWeight:'600', fontSize: 18}}>Season : </Text>
+          <View style={[groupStyles.picker]}>
+            <Picker
+              selectedValue={season}
+              onValueChange={season => {
+                setSeason(season);
+                setIsLoading(true);
+              }}>
+              {seasons.map(season => (
+                <Picker.Item
+                  key={season}
+                  label={season.toString()}
+                  value={season}
+                />
+              ))}
+            </Picker>
+          </View>
+        </View>
         <StandingsContoll
           navigation={navigation}
           prev={undefined}
@@ -164,6 +141,10 @@ const GroupScreen = () => {
 };
 const screenWidth = Dimensions.get('window').width;
 const groupStyles = StyleSheet.create({
+  picker: {
+    flex:1,
+    color: '#344953',
+  },
   groupRow: {
     display: 'flex',
     flexDirection: 'row',
@@ -171,9 +152,9 @@ const groupStyles = StyleSheet.create({
     marginVertical: 8,
   },
   teamName: {fontWeight: 'bold', marginHorizontal: 8},
-  stat: { fontWeight: 'bold', width: 40, textAlign:'center'},
+  stat: {fontWeight: 'bold', width: 40, textAlign: 'center'},
   group: {
-    width: screenWidth*0.8,
+    width: screenWidth * 0.8,
     marginBottom: 20,
   },
   groupHeader: {
@@ -182,7 +163,7 @@ const groupStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     borderRadius: 15,
-    width:screenWidth*0.8, 
+    width: screenWidth * 0.8,
     height: 40,
   },
   headerField: {

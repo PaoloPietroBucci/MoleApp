@@ -13,10 +13,14 @@ import PresentationSreen from './components/PresentationScreen';
 import { addPlayersByTeam } from './firebase/playerApi';
 
 interface AuthContextData {
+  season: number | undefined
+  setSeason: any,
   user: User | undefined;
   setUser: any;
 }
 export const authContext = createContext<AuthContextData>({
+  season: undefined,
+  setSeason: null,
   user: undefined,
   setUser: null,
 });
@@ -24,6 +28,7 @@ export const authContext = createContext<AuthContextData>({
 function App(): JSX.Element {
   const Stack = createStackNavigator();
   const [user, setUser] = useState<User>();
+  const [season, setSeason] = useState<number>(new Date().getFullYear())
 
   const [showSplash, setShowSplash] = useState(true);
 
@@ -54,7 +59,7 @@ function App(): JSX.Element {
     return <SplashScreen></SplashScreen>;
   } else {
     return (
-      <authContext.Provider value={{user: user, setUser: setUser}}>
+      <authContext.Provider value={{user: user, setUser: setUser, season: season, setSeason: setSeason}}>
         <NavigationContainer>
           {user === undefined ? (
             <Stack.Navigator

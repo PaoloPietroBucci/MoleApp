@@ -8,7 +8,7 @@ import Match from '../model/Match';
 import {CheckBox} from 'react-native-elements';
 import { validateScoreEditMatch } from '../services/validateInput';
 
-const AddMatchScreen = () => {
+const EditMatchScreen = () => {
   const [matches, setMatches] = useState<Match[]>();
   const [match, setMatch] = useState<Match>();
   const [goalTeam1, setGolTeam1] = useState<number>();
@@ -71,6 +71,7 @@ const AddMatchScreen = () => {
       try {
         const allMatches = await getMatchesWithoutScores();
         setMatches(allMatches)
+        setMatch(allMatches[0])
       } catch (error: any) {
         console.log(error);
       }
@@ -101,7 +102,7 @@ const AddMatchScreen = () => {
           ]}>
           <Picker selectedValue={match} onValueChange={handlePickerChange}>
             {matches!.map((match, index) => (
-              <Picker.Item key={index} label={match.team1+'-'+match.team2+' '+match.date.toString()} value={match} />
+              <Picker.Item key={index} label={match.team1+'-'+match.team2+' '+match.date.toDate()} value={match} />
             ))}
           </Picker>
         </View>
@@ -175,10 +176,9 @@ const AddMatchScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    );
+    )
   } else {
-    return;
-    <Text>match undefined</Text>;
+    return <Text>match undefined</Text>;
   }
 };
 
@@ -214,4 +214,4 @@ const addMatchStyle = StyleSheet.create({
   },
 });
 
-export default AddMatchScreen;
+export default EditMatchScreen;

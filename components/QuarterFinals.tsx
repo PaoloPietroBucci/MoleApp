@@ -9,14 +9,18 @@ import StandingsContoll from './utils/StandingsControll';
 import matchStyles from '../styles/matchStyle';
 import {getMatchesByRound} from '../firebase/matchApi';
 
-const QuarterFinlas = () => {
-  const [matches, setMatches] = useState<Match[] | any>();
+const QuarterFinlas = ({route}: {route: any}) => {
+  const [matches, setMatches] = useState<Match[]>();
   const [teamLogos, setTeamLogos] = useState<{[key: string]: string}>({});
+  const {season} = route.params;
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        var matches: Match[] | any = await getMatchesByRound('quarters');
+        var matches: Match[] | any = await getMatchesByRound(
+          'quarters',
+          season,
+        );
         const logos: {[key: string]: string} = {};
         await Promise.all(
           matches.map(async (match: any) => {
@@ -39,7 +43,9 @@ const QuarterFinlas = () => {
     return (
       <>
         <View style={matchStyles.matchContainer}>
-          <Text style={matchStyles.date}>{item.date.toDate().toDateString()}</Text>
+          <Text style={matchStyles.date}>
+            {item.date.toDate().toDateString()}
+          </Text>
           <View style={matchStyles.teamsContainer}>
             <View style={matchStyles.leftTeamBox}>
               <View style={styles.smallLogoContainer}>
@@ -50,7 +56,9 @@ const QuarterFinlas = () => {
               <Text style={matchStyles.teamName}> {item.team1} </Text>
             </View>
             <View style={[matchStyles.separator]}>
-              <Text style={{ textAlign: 'center',fontSize: 15}}>{item.goalTeam1} - {item.goalTeam2}</Text>
+              <Text style={{textAlign: 'center', fontSize: 15}}>
+                {item.goalTeam1} - {item.goalTeam2}
+              </Text>
             </View>
             <View style={[matchStyles.rightTeamBox]}>
               <View style={styles.smallLogoContainer}>
@@ -75,10 +83,14 @@ const QuarterFinlas = () => {
         current="Quarter Finals"
         next="semiFinals"
         prev="group"></StandingsContoll>
-      <FlatList
-        data={matches}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}></FlatList>
+      {matches?.length === 0 ? (
+        <View><Text>No match scheduled yet</Text></View>
+      ) : (
+        <FlatList
+          data={matches}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}></FlatList>
+      )}
     </SafeAreaView>
   );
 };
